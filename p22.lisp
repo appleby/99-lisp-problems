@@ -17,7 +17,7 @@
 	 (acc nil (push i acc)))
 	((funcall done i end) (nreverse acc)))))
 
-(defun p22-range-loop (start end)
+(defun p22-range-mvb-loop (start end)
   (multiple-value-bind (succ done)
       (if (< start end) (values #'1+ #'>) (values #'1- #'<))
     (loop for i = start then (funcall succ i) until (funcall done i end) collect i)))

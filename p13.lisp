@@ -12,12 +12,7 @@
 
 ;;; I already implemented this method as p11-encode-loop. Renaming it
 ;;; here to p13-encode.
-(defun p13-encode (lst)
-  (loop
-       with n = 0
-       for (cur . rest) on lst
-       for next = (first rest)
-       when (eql cur next) do (incf n)
-       else
-          when (zerop n) collect cur
-          else collect (list (1+ n) cur) and do (setf n 0)))
+
+(load "p11.lisp")
+(defvar p13-encode)
+(setf (symbol-function 'p13-encode) #'p11-encode-loop)

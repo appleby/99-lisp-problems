@@ -1,11 +1,11 @@
 ;;;; (*) Reverse a list
 
-(defun p05-reverse-iter (lst)
+(defun p05-reverse (lst)
   (let ((reversed '()))
     (dolist (x lst reversed)
       (push x reversed))))
 
-(defun p05-reverse-iter-recur (lst)
+(defun p05-reverse-recur (lst)
   (labels ((recur (lst acc)
 	     (if (null lst)
 		 acc

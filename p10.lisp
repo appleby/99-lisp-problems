@@ -9,16 +9,7 @@
 ;;;; * (encode '(a a a a b c c a a d e e e e))
 ;;;; ((4 A) (1 B) (2 C) (2 A) (1 D)(4 E))
 
-(defun p09-pack (lst)
-  (labels ((recur (lst acc)
-	     (let ((this (car lst))    ; relies on (car '()) ==> '()
-		   (next (cadr lst)))  ; likewise (cadr '()) ==> '()
-	       (cond
-		 ((null lst) acc)
-		 ((equalp this next)
-		  (recur (cdr lst) (cons this acc)))
-		 (t (cons (cons this acc) (recur (cdr lst) '())))))))
-    (recur lst '())))
+(load "p09.lisp")
 
 (defun p10-encode (lst)
   (mapcar (lambda (sub-list)
