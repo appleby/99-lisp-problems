@@ -22,7 +22,7 @@
        (vector-push (aref vector idx) selected)
      when (= (length selected) n) return selected))
 
-(defun p23-rnd-select (lst n)
+(defun p23-rnd-select-knuth (lst n)
   ;; Heavy lifting done by random-sample. Just convert between list
   ;; and array types.
   (let ((vector (make-array (length lst) :initial-contents lst)))
@@ -31,7 +31,7 @@
 (load "p03.lisp")
 (load "p20.lisp")
 
-(defun p23-rnd-select-hint (lst n)
+(defun p23-rnd-select (lst n)
   ;; Implemented as suggested by hint
   (labels ((recur (ll selected)
 	     (cond
