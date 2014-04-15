@@ -17,7 +17,8 @@
 ;;;   C(1, {x0, x1, ..., xn}) = {{x0}, {x1}, ..., {xn}}
 ;;;
 ;;; Inductive step
-;;;   C(k+1, {x0, x1, ..., xn}) = {xi ++ c | for xi in {x0, ..., x(n-k)} for c in C(k, {x(i+1), .., xn})}
+;;;   C(k+1, {x0, x1, ..., xn}) =
+;;;     {xi ++ c | for xi in {x0, ..., x(n-k)} for c in C(k, {x(i+1), .., xn})}
  
 (defun p26-combination (k lst)
   (if (= k 1)
