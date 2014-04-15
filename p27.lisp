@@ -27,9 +27,18 @@
 ;;;; on discrete mathematics under the term "multinomial
 ;;;; coefficients".
 
+(load "p26.lisp")
+
+(defun remove-all (items lst)
+  (remove-if (lambda (item) (member item items)) lst))
+
 (defun p27-group (names group-sizes)
-  '(()))
-  
+  (if (or (null names) (null group-sizes))
+      '(())
+      (loop for combo in (p26-combination (first group-sizes) names)
+	 append (loop for partial in (p27-group (remove-all combo names)
+						(rest group-sizes))
+		   collect (cons combo partial)))))
 
 (require :lisp-unit)
 
