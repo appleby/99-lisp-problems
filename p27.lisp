@@ -26,8 +26,7 @@
 ;;;; You may find more about this combinatorial problem in a good book
 ;;;; on discrete mathematics under the term "multinomial
 ;;;; coefficients".
-
-(load "p26.lisp")
+(in-package :99)
 
 (defun remove-all (items lst)
   (remove-if (lambda (item) (member item items)) lst))
@@ -40,13 +39,11 @@
 						(rest group-sizes))
 		   collect (cons combo partial)))))
 
-(require :lisp-unit)
-
-(lisp-unit:define-test p27-group-known-solutions
+(define-test p27-group-known-solutions
   (let ((names '(aldo beat carla david evi flip gary hugo ida))
 	(known-solutions '(((2 3 4) 1260 (ALDO BEAT) (CARLA DAVID EVI) (FLIP GARY HUGO IDA))    ; (2, 3, 4)! = 1260
 			   ((2 2 5) 756  (ALDO BEAT) (CARLA DAVID) (EVI FLIP GARY HUGO IDA))))) ; (2, 2, 5)! = 756
     (loop for (sizes num-solutions . known-solution) in known-solutions
        do (let ((solutions (p27-group names sizes)))
-	    (lisp-unit:assert-equal num-solutions (length solutions))
-	    (lisp-unit:assert-true (member known-solution solutions :test #'equal))))))
+	    (assert-equal num-solutions (length solutions))
+	    (assert-true (member known-solution solutions :test #'equal))))))

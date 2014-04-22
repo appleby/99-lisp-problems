@@ -4,6 +4,7 @@
 ;;;; Example:
 ;;;; * (range 4 9)
 ;;;; (4 5 6 7 8 9)
+(in-package :99)
 
 (defun p22-range (start end)
   (if (> start end)

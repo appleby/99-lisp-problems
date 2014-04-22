@@ -3,9 +3,7 @@
 ;;;; Example:
 ;;;; * (lotto-select 6 49)
 ;;;; (23 1 17 33 21 37)
-
-(load "p22.lisp")
-(load "p23.lisp")
+(in-package :99)
 
 (defun p24-lotto-select (take max)
   (p23-rnd-select (p22-range 1 max) take))

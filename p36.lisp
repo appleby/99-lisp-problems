@@ -7,9 +7,7 @@
 ;;;; * (prime-factors-mult 315)
 ;;;; ((3 2) (5 1) (7 1))
 ;;;; Hint: The problem is similar to problem P13.
-
-(require :lisp-unit)
-(load "p35.lisp")
+(in-package :99)
 
 (defun p36-prime-factors-mult (n)
   (loop
@@ -19,10 +17,10 @@
      else collect (list k count)
      and do (setf count 1)))
        
-(lisp-unit:define-test p36-prime-factors-mult-known-inputs
-  (lisp-unit:assert-equal '((3 2) (5 1) (7 1)) (p36-prime-factors-mult 315)))
+(define-test p36-prime-factors-mult-known-inputs
+  (assert-equal '((3 2) (5 1) (7 1)) (p36-prime-factors-mult 315)))
 
-(lisp-unit:define-test p36-prime-factors-mult-test
+(define-test p36-prime-factors-mult-test
   (loop for i from 2 below 1000
-     do (lisp-unit:assert-eql i (apply #'* (mapcar (lambda (x) (apply #'expt x))
+     do (assert-eql i (apply #'* (mapcar (lambda (x) (apply #'expt x))
 						   (p36-prime-factors-mult i))))))

@@ -2,6 +2,7 @@
 ;;;; Example:
 ;;;; * (my-last '(a b c d))
 ;;;; (D)
+(in-package :99)
 
 (defun p01-last (lst)
   (if (cdr lst)

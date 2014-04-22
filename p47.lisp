@@ -11,8 +11,7 @@
 ;;;; true nil true
 ;;;; nil true nil 
 ;;;; nil nil nil
-
-(load "p46.lisp")
+(in-package :99)
 
 (defun bind-vars (expr &rest vars-and-values)
   (loop

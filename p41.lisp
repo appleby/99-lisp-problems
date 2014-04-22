@@ -23,8 +23,7 @@
 ;;;; 1382 = 61 + 1321
 ;;;; 1856 = 67 + 1789
 ;;;; 1928 = 61 + 1867
-
-(load "p40.lisp")
+(in-package :99)
 
 (defun p41-goldbach-list (start end &optional (print-limit 0))
   (let* ((goldbach-start (cond ((<= start 4) 4)

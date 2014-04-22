@@ -1,4 +1,5 @@
 ;;;; (*) Reverse a list
+(in-package :99)
 
 (defun p05-reverse (lst)
   (let ((reversed '()))

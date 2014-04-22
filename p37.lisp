@@ -12,11 +12,7 @@
 ;;;;          (p3 - 1) * p3 ** (m3 - 1) + ...
 ;;;;
 ;;;; Note that a ** b stands for the b'th power of a.
-
-(require :lisp-unit)
-
-(load "p34.lisp")
-(load "p36.lisp")
+(in-package :99)
 
 ;;; Note that there is an error in the equation given for phi,
 ;;; above. The series should be a product, not a sum.
@@ -24,6 +20,6 @@
   (apply #'* (loop for (p m) in (p36-prime-factors-mult n)
 		collect (* (1- p) (expt p (1- m))))))
 
-(lisp-unit:define-test p37-totient-phi-test
+(define-test p37-totient-phi-test
   (loop for i from 2 upto 1000
-     do (lisp-unit:assert-eql (p34-totient-phi i) (p37-totient-phi i))))
+     do (assert-eql (p34-totient-phi i) (p37-totient-phi i))))

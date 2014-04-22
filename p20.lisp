@@ -2,6 +2,7 @@
 ;;;; Example:
 ;;;; * (remove-at '(a b c d) 2)
 ;;;; (A C D)
+(in-package :99)
 
 (defun p20-remove-at (lst n)
   (loop for elem in lst

@@ -4,6 +4,7 @@
 ;;;; Example:
 ;;;; * (pack '(a a a a b c c a a d e e e e))
 ;;;; ((A A A A) (B) (C C) (A A) (D) (E E E E))
+(in-package :99)
 
 (defun p09-pack (lst)
   (labels ((recur (lst acc)

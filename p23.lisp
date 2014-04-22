@@ -6,6 +6,7 @@
 
 ;;;; Hint: Use the built-in random number generator and the result of
 ;;;; problem P20.
+(in-package :99)
 
 (defun random-sample (vector n)
   "Based on Algorithm S from Knuth. TAOCP, vol. 2. p. 142.
@@ -27,9 +28,6 @@
   ;; and array types.
   (let ((vector (make-array (length lst) :initial-contents lst)))
     (loop for x across (random-sample vector n) collecting x)))
-
-(load "p03.lisp")
-(load "p20.lisp")
 
 (defun p23-rnd-select (lst n)
   ;; Implemented as suggested by hint

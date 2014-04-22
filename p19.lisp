@@ -8,8 +8,7 @@
 
 ;;;; Hint: Use the predefined functions length and append, as well as
 ;;;; the result of problem P17.
-
-(load "p17.lisp")
+(in-package :99)
 
 (defun p19-rotate (lst n)
   (let ((split-point (mod n (length lst))))

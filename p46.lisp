@@ -17,6 +17,7 @@
 ;;;; true nil true
 ;;;; nil true nil 
 ;;;; nil nil nil 
+(in-package :99)
 
 (defmacro nand (&rest x)
   `(not (and ,@x)))

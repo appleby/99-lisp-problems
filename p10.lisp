@@ -8,8 +8,7 @@
 ;;;; Example:
 ;;;; * (encode '(a a a a b c c a a d e e e e))
 ;;;; ((4 A) (1 B) (2 C) (2 A) (1 D)(4 E))
-
-(load "p09.lisp")
+(in-package :99)
 
 (defun p10-encode (lst)
   (mapcar (lambda (sub-list)

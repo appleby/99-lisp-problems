@@ -7,6 +7,7 @@
 ;;;; Example:
 ;;;; * (slice '(a b c d e f g h i k) 3 7)
 ;;;; (C D E F G)
+(in-package :99)
 
 (defun p18-slice (lst start end)
   (when (or (> start end) (not (plusp end)))

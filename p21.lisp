@@ -2,6 +2,7 @@
 ;;;; Example:
 ;;;; * (insert-at 'alfa '(a b c d) 2)
 ;;;; (A ALFA B C D)
+(in-package :99)
 
 (defun p21-insert-at (new-elem lst n)
   (loop for elem in lst

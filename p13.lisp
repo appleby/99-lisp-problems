@@ -12,7 +12,7 @@
 
 ;;; I already implemented this method as p11-encode-loop. Renaming it
 ;;; here to p13-encode.
+(in-package :99)
 
-(load "p11.lisp")
 (defvar p13-encode)
 (setf (symbol-function 'p13-encode) #'p11-encode-loop)

@@ -16,8 +16,7 @@
 ;;;; nil true nil true
 ;;;; nil nil true true
 ;;;; nil nil nil true
-
-(load "p46.lisp")
+(in-package :99)
 
 (defun n-tuples (n values)
   (if (= n 0)

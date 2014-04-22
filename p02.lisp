@@ -2,6 +2,7 @@
 ;;;; Example:
 ;;;; * (my-but-last '(a b c d))
 ;;;; (C D)
+(in-package :99)
 
 (defun p02-but-last (lst)
   (if (cddr lst)

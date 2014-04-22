@@ -2,8 +2,7 @@
 ;;;;
 ;;;; Given a range of integers by its lower and upper limit, construct
 ;;;; a list of all prime numbers in that range.
-
-(load "p31.lisp")
+(in-package :99)
 
 (defun p39-prime-range (start end)
   (loop for i from start upto end

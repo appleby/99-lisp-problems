@@ -15,8 +15,7 @@
 ;;;; this exercise you should use the most primitive method to
 ;;;; calculate this function (there are smarter ways that we shall
 ;;;; discuss later).
-
-(load "p33.lisp")
+(in-package :99)
 
 (defun p34-totient-phi (m)
   (when (< m 1)

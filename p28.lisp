@@ -25,9 +25,7 @@
 ;;;; forth list have length 3 which appears twice (there are two list
 ;;;; of this length). And finally, the last three lists have length
 ;;;; 2. This is the most frequent length.
-
-(require :lisp-unit)
-(load "p10.lisp")
+(in-package :99)
 
 (defun rl-encoded->alist (rl-encoded-list)
   (loop for lst in rl-encoded-list collect (cons (cadr lst) (car lst))))
@@ -40,17 +38,17 @@
 					(sort (mapcar #'length lst) #'<)))))
     (stable-sort lst #'< :key (lambda (x) (cdr (assoc (length x) freqencies))))))
 
-(lisp-unit:define-test p28-lsort-known-solutions
+(define-test p28-lsort-known-solutions
   (let ((input '((a b c) (d e) (f g h) (d e) (i j k l) (m n) (o)))
 	(expected-solution '((O) (D E) (D E) (M N) (A B C) (F G H) (I J K L))))
-    (lisp-unit:assert-equal expected-solution (p28-lsort (copy-list input)))))
+    (assert-equal expected-solution (p28-lsort (copy-list input)))))
 
-(lisp-unit:define-test p28-lfsort-known-solutions
+(define-test p28-lfsort-known-solutions
   (let ((input '((a b c) (d e) (f g h) (d e) (i j k l) (m n) (o)))
 	(expected-solution '((i j k l) (o) (a b c) (f g h) (d e) (d e) (m n))))
-    (lisp-unit:assert-equal expected-solution (p28-lfsort (copy-list input)))))
+    (assert-equal expected-solution (p28-lfsort (copy-list input)))))
 
-(lisp-unit:define-test rl-encoded->alist-test
+(define-test rl-encoded->alist-test
   (let ((input '((1 A) (3 B) (2 C) (7 D)))
 	(expected-solution '((A . 1) (B . 3) (C . 2) (D . 7))))
-    (lisp-unit:assert-equal expected-solution (rl-encoded->alist input))))
+    (assert-equal expected-solution (rl-encoded->alist input))))
