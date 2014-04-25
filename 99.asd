@@ -12,6 +12,6 @@
   :description "Solutions to the 99-Lisp problems."
   :author "Mike Appleby"
   :license "Nobody cares."
-  :depends-on (#:lisp-unit)
+  :depends-on (#:cl-heap #:lisp-unit)
   :components #.(files-matching-pattern "p*.lisp" :depends '("package")))
 
