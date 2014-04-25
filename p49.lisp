@@ -23,7 +23,7 @@
 (defun p49-gray (n)
   (if (= n 1)
       (list "0" "1")
-      (let* ((gray (gray (1- n)))
+      (let* ((gray (p49-gray (1- n)))
 	     (yarg (reverse gray)))
 	(append (mapcar (prepender "0") gray)
 		(mapcar (prepender "1") yarg)))))
