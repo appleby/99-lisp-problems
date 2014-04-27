@@ -22,12 +22,13 @@
 
 (in-package :99)
 
-(defun p55-unique-pairs (trees1 trees2)
-  (flet ((cartesian-product (list1 list2)
-	   (loop for x in list1 append
-		(loop for y in list2 collect (list x y)))))
-    (append (cartesian-product trees1 trees2)
-	    (cartesian-product trees2 trees1))))
+(defun cartesian-product (list1 list2)
+  (loop for x in list1 append
+       (loop for y in list2 collect (list x y))))
+
+(defun p55-combine-solutions (trees1 trees2)
+  (append (cartesian-product trees1 trees2)
+	  (cartesian-product trees2 trees1)))
 
 ;;; Should memoize.
 (defun p55-cbal-tree (n)
@@ -38,8 +39,8 @@
 	     (subtree-1 (p55-cbal-tree n1)))
 	(let ((left-right-tree-pairs
 	       (if (= n1 n2)
-		   (n-tuples 2 subtree-1)
-		   (p55-unique-pairs subtree-1 (p55-cbal-tree n2)))))
+		   (cartesian-product subtree-1 subtree-1)
+		   (p55-combine-solutions subtree-1 (p55-cbal-tree n2)))))
 	  (loop for (left-tree right-tree) in left-right-tree-pairs
 	     collect (list 'x left-tree right-tree))))))
 
