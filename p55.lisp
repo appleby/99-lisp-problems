@@ -23,15 +23,11 @@
 (in-package :99)
 
 (defun p55-unique-pairs (trees1 trees2)
-  (flet ((pair-tree-equal (pair1 pair2)
-	   (and (tree-equal (car pair1) (car pair2))
-		(tree-equal (cdr pair1) (cdr pair2))))
-	 (cartesian-product (list1 list2)
+  (flet ((cartesian-product (list1 list2)
 	   (loop for x in list1 append
 		(loop for y in list2 collect (list x y)))))
-    (union (cartesian-product trees1 trees2)
-	   (cartesian-product trees2 trees1)
-	   :test #'pair-tree-equal)))
+    (append (cartesian-product trees1 trees2)
+	    (cartesian-product trees2 trees1))))
 
 ;;; Should memoize.
 (defun p55-cbal-tree (n)
@@ -60,4 +56,5 @@
 		      (X (X (X NIL NIL) NIL) (X NIL (X NIL NIL)))
 		      (X (X (X NIL NIL) NIL) (X (X NIL NIL) NIL)))))))
     (loop for (n expected) in inputs
-       do (assert-true (every #'tree-equal expected (p55-cbal-tree n))))))
+       do (assert-true (every (lambda (tree) (member tree expected :test #'tree-equal))
+			      (p55-cbal-tree n))))))
