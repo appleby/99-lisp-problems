@@ -36,13 +36,13 @@
       (list nil)
       (let* ((n1 (truncate (1- n) 2))
 	     (n2 (- n 1 n1))
-	     (subtree-1 (p55-cbal-tree n1)))
-	(let ((left-right-tree-pairs
-	       (if (= n1 n2)
-		   (cartesian-product subtree-1 subtree-1)
-		   (p55-combine-solutions subtree-1 (p55-cbal-tree n2)))))
-	  (loop for (left-tree right-tree) in left-right-tree-pairs
-	     collect (list 'x left-tree right-tree))))))
+	     (subtree-1 (p55-cbal-tree n1))
+	     (left-right-tree-pairs
+	      (if (= n1 n2)
+		  (cartesian-product subtree-1 subtree-1)
+		  (p55-combine-solutions subtree-1 (p55-cbal-tree n2)))))
+	(loop for (left-tree right-tree) in left-right-tree-pairs
+	   collect (list 'x left-tree right-tree)))))
 
 
 (define-test p55-cbal-tree
