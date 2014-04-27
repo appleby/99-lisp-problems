@@ -26,11 +26,11 @@
   (flet ((pair-tree-equal (pair1 pair2)
 	   (and (tree-equal (car pair1) (car pair2))
 		(tree-equal (cdr pair1) (cdr pair2))))
-	 (make-pairs (list1 list2)
+	 (cartesian-product (list1 list2)
 	   (loop for x in list1 append
 		(loop for y in list2 collect (list x y)))))
-    (union (make-pairs trees1 trees2)
-	   (make-pairs trees2 trees1)
+    (union (cartesian-product trees1 trees2)
+	   (cartesian-product trees2 trees1)
 	   :test #'pair-tree-equal)))
 
 ;;; Should memoize.
@@ -46,3 +46,18 @@
 		   (p55-unique-pairs subtree-1 (p55-cbal-tree n2)))))
 	  (loop for (left-tree right-tree) in left-right-tree-pairs
 	     collect (list 'x left-tree right-tree))))))
+
+
+(define-test p55-cbal-tree
+  (let ((inputs '((0 (NIL))
+		  (1 ((X NIL NIL)))
+		  (2 ((X NIL (X NIL NIL)) (X (X NIL NIL) NIL)))
+		  (3 ((X (X NIL NIL) (X NIL NIL))))
+		  (4 ((X (X NIL NIL) (X (X NIL NIL) NIL)) (X (X NIL NIL) (X NIL (X NIL NIL)))
+		      (X (X NIL (X NIL NIL)) (X NIL NIL)) (X (X (X NIL NIL) NIL) (X NIL NIL))))
+		  (5 ((X (X NIL (X NIL NIL)) (X NIL (X NIL NIL)))
+		      (X (X NIL (X NIL NIL)) (X (X NIL NIL) NIL))
+		      (X (X (X NIL NIL) NIL) (X NIL (X NIL NIL)))
+		      (X (X (X NIL NIL) NIL) (X (X NIL NIL) NIL)))))))
+    (loop for (n expected) in inputs
+       do (assert-true (every #'tree-equal expected (p55-cbal-tree n))))))
