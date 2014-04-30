@@ -21,3 +21,7 @@
 (defun tree-right (tree)
   (caddr tree))
 
+(defun leaf-node-p (tree)
+  (and (not (null tree))
+       (null (tree-left tree))
+       (null (tree-right tree))))
