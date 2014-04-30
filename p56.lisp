@@ -12,10 +12,10 @@
   (labels ((mirror-images-p (t1 t2)
 	     (cond ((and (null t1) (null t2)) t)
 		   ((or (null t1) (null t2)) nil)
-		   (t (and (mirror-images-p (cadr t1) (caddr t2))
-			   (mirror-images-p (caddr t1) (cadr t2)))))))
+		   (t (and (mirror-images-p (tree-left t1) (tree-right t2))
+			   (mirror-images-p (tree-right t1) (tree-left t2)))))))
     (or (null tree)
-	(mirror-images-p (cadr tree) (caddr tree)))))
+	(mirror-images-p (tree-left tree) (tree-right tree)))))
 
 (define-test p56-symmetric-test
   (let ((symmetric-trees '(nil

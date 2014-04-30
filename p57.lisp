@@ -19,19 +19,16 @@
 
 (in-package :99)
 
-(defun make-empty-tree ()
-  '())
-
-(defun make-leaf-node (x)
-  (list x nil nil))
-
 (defun p57-add-element (e tree)
-  (cond ((null tree) (make-leaf-node e))
-	((= e (car tree)) tree)
-	((< e (car tree))
-	 (list (car tree) (p57-add-element e (cadr tree)) (caddr tree)))
-	((> e (car tree))
-	 (list (car tree) (cadr tree) (p57-add-element e (caddr tree))))))
+  (cond ((null tree)
+	 (make-leaf-node e))
+	((= e (tree-elem tree))
+	 tree)
+	((< e (tree-elem tree))
+	 (list (tree-elem tree)
+	       (p57-add-element e (tree-left tree)) (tree-right tree)))
+	((> e (tree-elem tree))
+	 (list (tree-elem tree) (tree-left tree) (p57-add-element e (tree-right tree))))))
 
 (defun p57-construct (lst)
   (loop

@@ -47,18 +47,12 @@
        while (balanced low high)
        collect (list low high))))
 
-(defun p60-generate-subtrees (left right)
-  (let* ((left-tree (p60-hbal-tree-nodes left)))
-    (if (= left right)
-	(cartesian-product left-tree left-tree)
-	(p55-combine-solutions left-tree (p60-hbal-tree-nodes right)))))
-
 (defun p60-hbal-tree-nodes (n)
   (if (<= n 0)
-      '(())
+      (list (make-empty-tree))
       (loop for (low high) in (p60-balanced-partitions (1- n))
-	 append (mapcar (lambda (x) (cons 'x x))
-			(p60-generate-subtrees low high)))))
+	 append (extend-trees
+		 (generate-subtrees #'p60-hbal-tree-nodes low high)))))
 
 (defun p60-hbal-tree-nodes-print (n)
   (loop for tree in (p60-hbal-tree-nodes n) do (print tree)))

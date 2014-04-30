@@ -26,21 +26,31 @@
   (loop for x in list1 append
        (loop for y in list2 collect (list x y))))
 
-(defun p55-combine-solutions (trees1 trees2)
+(defun combine-subtrees (trees1 trees2)
   (append (cartesian-product trees1 trees2)
 	  (cartesian-product trees2 trees1)))
+
+(defun generate-subtrees (tree-fn left right)
+  (let* ((left-trees (funcall tree-fn left)))
+    (if (= left right)
+	(cartesian-product left-trees left-trees)
+	(combine-subtrees left-trees (funcall tree-fn right)))))
+
+(defun extend-trees (trees &optional (symbol 'x))
+  (mapcar (lambda (tree) (cons symbol tree)) trees))
 
 ;;; Should memoize.
 (defun p55-cbal-tree (n)
   (if (= n 0)
-      (list nil)
+      (list *the-empty-tree*)
       (let* ((n1 (truncate (1- n) 2))
-	     (n2 (- n 1 n1))
-	     (subtree (p55-cbal-tree n1)))
-	(mapcar (lambda (x) (cons 'x x))
-		(if (= n1 n2)
-		    (cartesian-product subtree subtree)
-		    (p55-combine-solutions subtree (p55-cbal-tree n2)))))))
+	     (n2 (- n 1 n1)))
+	(extend-trees
+	 (generate-subtrees #'p55-cbal-tree n1 n2)))))
+
+(defun tree-solutions-valid (expected solutions)
+  (every (lambda (tree) (member tree expected :test #'tree-equal))
+	 solutions))
 
 (define-test p55-cbal-tree
   (let ((inputs '((0 (NIL))
@@ -54,5 +64,4 @@
 		      (X (X (X NIL NIL) NIL) (X NIL (X NIL NIL)))
 		      (X (X (X NIL NIL) NIL) (X (X NIL NIL) NIL)))))))
     (loop for (n expected) in inputs
-       do (assert-true (every (lambda (tree) (member tree expected :test #'tree-equal))
-			      (p55-cbal-tree n))))))
+       do (assert-true (tree-solutions-valid expected (p55-cbal-tree n))))))
