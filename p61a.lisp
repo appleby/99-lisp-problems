@@ -9,9 +9,7 @@
 
 (defun leaves (tree)
   (cond ((null tree) *the-empty-tree*)
-	((and (null (tree-left tree))
-	      (null (tree-right tree)))
-	 (list tree))
+	((leaf-node-p tree) (list tree))
 	(t (append (leaves (tree-left tree))
 		   (leaves (tree-right tree))))))
 
