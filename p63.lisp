@@ -28,32 +28,11 @@
 (in-package :99)
 
 (defun complete-binary-tree (n &optional (k 1))
-  (if (= n 0)
+  (if (> k n)
       *the-empty-tree*
-      (let* (
-	     ;; h is the height of the largest perfect tree that is a
-	     ;; subtree of this tree. If the tree we are constructing
-	     ;; is a perfect tree, then the h is the height of this
-	     ;; tree; otherwise, the height of this tree is h+1.
-	     (h (floor (log (1+ n) 2)))
-
-	     ;; i is the total number of nodes in a perfect subtree of
-	     ;; height h.
-	     (i (1- (expt 2 h)))
-
-	     ;; r is the maximum number of nodes that would fit in
-	     ;; level h+1 of a perfect tree.
-	     (r (expt 2 h))
-
-	     ;; m is the actual number of nodes in level h+1 of this
-	     ;; tree. Note that if this is a perfect tree, then m = 0.
-	     (m (- n i))
-
-	     ;; l is the total number of nodes in the left subtree.
-	     (l (+ (/ (1- i) 2) (min m (/ r 2)))))
-	(list k
-	      (complete-binary-tree l (* 2 k))
-	      (complete-binary-tree (- n 1 l) (+ (* 2 k) 1))))))
+      (list k
+	    (complete-binary-tree n (* 2 k))
+	    (complete-binary-tree n (+ (* 2 k) 1)))))
 
 (define-test complete-binary-tree-test
   (let ((inputs '((0  NIL)
