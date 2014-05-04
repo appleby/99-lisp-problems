@@ -21,6 +21,9 @@
 (defun tree-right (tree)
   (caddr tree))
 
+(defun tree-empty-p (tree)
+  (eq tree *the-empty-tree*))
+
 (defun leaf-node-p (tree)
   (and (not (null tree))
        (null (tree-left tree))
