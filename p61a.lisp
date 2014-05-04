@@ -8,7 +8,7 @@
 (in-package :99)
 
 (defun leaves (tree)
-  (cond ((null tree) *the-empty-tree*)
+  (cond ((tree-empty-p tree) *the-empty-tree*)
 	((leaf-node-p tree) (list tree))
 	(t (append (leaves (tree-left tree))
 		   (leaves (tree-right tree))))))

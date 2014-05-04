@@ -8,7 +8,7 @@
 (in-package :99)
 
 (defun count-leaves (tree)
-  (cond ((null tree) 0)
+  (cond ((tree-empty-p tree) 0)
 	((leaf-node-p tree) 1)
 	(t (+ (count-leaves (tree-left tree))
 	      (count-leaves (tree-right tree))))))

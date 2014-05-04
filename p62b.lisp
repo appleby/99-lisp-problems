@@ -13,7 +13,7 @@
 (in-package :99)
 
 (defun atlevel (tree level)
-  (cond ((null tree) *the-empty-tree*)
+  (cond ((tree-empty-p tree) *the-empty-tree*)
 	((= level 1) (list tree))
 	(t (append (atlevel (tree-left tree) (1- level))
 		   (atlevel (tree-right tree) (1- level))))))

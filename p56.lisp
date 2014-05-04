@@ -10,11 +10,11 @@
 
 (defun p56-symmetric (tree)
   (labels ((mirror-images-p (t1 t2)
-	     (cond ((and (null t1) (null t2)) t)
-		   ((or (null t1) (null t2)) nil)
+	     (cond ((and (tree-empty-p t1) (tree-empty-p t2)) t)
+		   ((or (tree-empty-p t1) (tree-empty-p t2)) nil)
 		   (t (and (mirror-images-p (tree-left t1) (tree-right t2))
 			   (mirror-images-p (tree-right t1) (tree-left t2)))))))
-    (or (null tree)
+    (or (tree-empty-p tree)
 	(mirror-images-p (tree-left tree) (tree-right tree)))))
 
 (define-test p56-symmetric-test

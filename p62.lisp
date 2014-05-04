@@ -8,7 +8,7 @@
 (in-package :99)
 
 (defun internals (tree)
-  (cond ((null tree) *the-empty-tree*)
+  (cond ((tree-empty-p tree) *the-empty-tree*)
 	((leaf-node-p tree) *the-empty-tree*)
 	(t (cons tree (append (internals (tree-left tree))
 			      (internals (tree-right tree)))))))

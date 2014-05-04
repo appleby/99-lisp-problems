@@ -20,7 +20,7 @@
 (in-package :99)
 
 (defun p57-add-element (e tree)
-  (cond ((null tree)
+  (cond ((tree-empty-p tree)
 	 (make-leaf-node e))
 	((= e (tree-elem tree))
 	 tree)
