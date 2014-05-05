@@ -9,10 +9,10 @@
 ;;;; in an appropriate way.
 (in-package :99)
 
-(defun tree-height (tree)
-  "Return the height of TREE, 0-indexed."
+(defun tree-height (tree &optional (index 0))
+  "Return the height of TREE."
   (if (tree-empty-p tree)
-      -1
+      (1- index)
       (1+ (max (tree-height (tree-left tree))
 	       (tree-height (tree-right tree))))))
 
