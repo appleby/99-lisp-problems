@@ -1,2 +1,2 @@
 (defpackage #:99
-  (:use #:cl #:lisp-unit #:split-sequence))
+  (:use #:cl #:com.informatimago.rdp #:lisp-unit #:split-sequence))
