@@ -10,7 +10,10 @@
   *the-empty-tree*)
 
 (defun make-leaf-node (&optional (symbol 'x))
-  (list symbol nil nil))
+  (make-tree-node symbol nil nil))
+
+(defun make-tree-node (elem left right)
+  (list elem left right))
 
 (defun tree-elem (tree)
   (car tree))
