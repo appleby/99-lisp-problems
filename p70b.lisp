@@ -12,6 +12,7 @@
   (cond ((null list) nil)
 	((symbolp list) t)
 	((listp list)
-	 (and (symbolp (car list))
+	 (and (> (length list) 1)
+	      (symbolp (car list))
 	      (loop for child in (cdr list) always (is-mw-tree child))))
 	(t nil)))
