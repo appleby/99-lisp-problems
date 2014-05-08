@@ -10,7 +10,6 @@
 (defun ipl (mw-tree)
   (labels ((recur (tree height)
 	     (ecase (type-of tree)
-	       ((null) 0)
 	       ((symbol) height)
 	       ((cons)
 		(reduce #'+
