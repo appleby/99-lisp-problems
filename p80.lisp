@@ -8,130 +8,88 @@
 ;;;; it's a lot of work to deal with all the special cases.
 (in-package :99)
 
-(defun adj<-gef (gef)
-  gef)
+(defclass graph ()
+  ((graph-list :accessor graph-list :initarg :data :initform '())))
 
-(defun adj<-digef (digef)
-  digef)
+(defclass undirected-graph (graph) ())
+(defclass directed-graph (graph) ())
+(defclass labeled-graph (graph) ())
+(defclass labeled-undirected-graph (labeled-graph undirected-graph) ())
+(defclass labeled-directed-graph (labeled-graph directed-graph) ())
 
-(defun adj<-diadj (diadj)
-  diadj)
+(defun mk-graph (data)
+  (make-instance 'undirected-graph :data (copy-seq data)))
 
-(defun adj<-lagef (lagef)
-  lagef)
+(defun mk-digraph (data)
+  (make-instance 'directed-graph :data (copy-seq data)))
 
-(defun adj<-laadj (laadj)
-  laadj)
+(defun mk-labeled-graph (data)
+  (make-instance 'labeled-undirected-graph :data (copy-seq data)))
 
-(defun gef<-adj (adj)
-  adj)
+(defun mk-labeled-digraph (data)
+  (make-instance 'labeled-directed-graph :data (copy-seq data)))
 
-(defun gef<-digef (digef)
-  digef)
+(defgeneric adjacency (graph)
+  (:documentation "Convert given GRAPH to an adjacency-list."))
 
-(defun gef<-diadj (diadj)
-  diadj)
+(defmethod adjacency ((graph undirected-graph))
+  (destructuring-bind (nodes edges) (graph-list graph)
+    (loop for node in nodes collect
+	 (list node (loop for (n1 n2) in edges
+		       when (eq node n1) collect n2
+		       when (eq node n2) collect n1)))))
 
-(defun gef<-lagef (lagef)
-  lagef)
+(defmethod adjacency ((graph directed-graph))
+  (destructuring-bind (nodes edges) (graph-list graph)
+    (loop for node in nodes collect
+	 (list node (loop for (n1 n2) in edges
+		       when (eq node n1) collect n2)))))
 
-(defun gef<-laadj (laadj)
-  laadj)
+(defmethod adjacency ((graph labeled-undirected-graph))
+  (destructuring-bind (nodes edges) (graph-list graph)
+    (loop for node in nodes collect
+	 (list node (loop for (n1 n2 label) in edges
+		       when (eq node n1) collect (list n2 label)
+		       when (eq node n2) collect (list n1 label))))))
 
-(defun digef<-adj (adj)
-  adj)
+(defmethod adjacency ((graph labeled-directed-graph))
+  (destructuring-bind (nodes edges) (graph-list graph)
+    (loop for node in nodes collect
+	 (list node (loop for (n1 n2 label) in edges
+		       when (eq node n1) collect (list n2 label))))))
 
-(defun digef<-gef (gef)
-  gef)
+(defgeneric convert-to (to from)
+  (:documentation "Convert between graph types."))
 
-(defun digef<-diadj (diadj)
-  diadj)
+(defmethod convert-to ((_ (eql 'adjacency)) (graph graph))
+  (make-instance (class-of graph) :data (adjacency graph)))
 
-(defun digef<-lagef (lagef)
-  lagef)
+(defmethod convert-to ((_ (eql 'undirected)) (graph directed-graph))
+  (destructuring-bind (directed-nodes directed-edges) (graph-list graph)
+    (mk-graph
+     (list directed-nodes
+	   (loop for (n1 n2) in directed-edges
+	      unless (member n1 edges :key #'second)
+	      collect (list n1 n2) into edges
+	      finally (return edges))))))
 
-(defun digef<-laadj (laadj)
-  laadj)
+(defmethod convert-to ((_ (eql 'undirected)) (graph labeled-undirected-graph))
+  graph)
 
-(defun diadj<-adj (adj)
-  adj)
+(defmethod convert-to ((_ (eql 'undirected)) (graph labeled-directed-graph))
+  graph)
 
-(defun diadj<-gef (gef)
-  gef)
-
-(defun diadj<-digef (digef)
-  digef)
-
-(defun diadj<-lagef (lagef)
-  lagef)
-
-(defun diadj<-laadj (laadj)
-  laadj)
-
-(defun lagef<-adj (adj)
-  adj)
-
-(defun lagef<-gef (gef)
-  gef)
-
-(defun lagef<-digef (digef)
-  digef)
-
-(defun lagef<-diadj (diadj)
-  diadj)
-
-(defun lagef<-laadj (laadj)
-  laadj)
-
-(defun laadj<-adj (adj)
-  adj)
-
-(defun laadj<-gef (gef)
-  gef)
-
-(defun laadj<-digef (digef)
-  digef)
-
-(defun laadj<-diadj (diadj)
-  diadj)
-
-(defun laadj<-lagef (lagef)
-  lagef)
+(defun graph-equal (a b)
+  (tree-equal (graph-list a) (graph-list b)))
 
 (define-test graph-to-*-test
-    (let ((gef '((b c d f g h k) ((b c) (b f) (c f) (f k) (g h))))
-	  (adj '((b (c f)) (c (b f)) (d ()) (f (b c k)) (g (h)) (h (g)) (k (f))))
-	  (digef '((b c d f g h k) ((b c) (c b) (b f) (f b) (c f) (f c) (f k) (k f) (g h) (h g))))
-	  (diadj '((b (c f)) (c (b f)) (d ()) (f (b c k)) (g (h)) (h (g)) (k (f))))
-	  (lagef '((b c d f g h k) ((b c 1) (b f 1) (c f 1) (f k 1) (g h 1))))
-	  (laadj '((b ((c 1) (f 1))) (c ((b 1) (f 1))) (d (())) (f ((b 1) (c 1) (k 1))) (g ((h 1))) (h ((g 1))) (k ((f 1))))))
-      (assert-equality #'tree-equal gef (gef<-adj (adj<-gef gef)))
-      (assert-equality #'tree-equal gef (gef<-digef (digef<-gef gef)))
-      (assert-equality #'tree-equal gef (gef<-diadj (diadj<-gef gef)))
-      (assert-equality #'tree-equal gef (gef<-lagef (lagef<-gef gef)))
-      (assert-equality #'tree-equal gef (gef<-laadj (laadj<-gef gef)))
-      (assert-equality #'tree-equal adj (adj<-gef (gef<-adj adj)))
-      (assert-equality #'tree-equal adj (adj<-digef (digef<-adj adj)))
-      (assert-equality #'tree-equal adj (adj<-diadj (diadj<-adj adj)))
-      (assert-equality #'tree-equal adj (adj<-lagef (lagef<-adj adj)))
-      (assert-equality #'tree-equal adj (adj<-laadj (laadj<-adj adj)))
-      (assert-equality #'tree-equal digef (digef<-adj (adj<-digef digef)))
-      (assert-equality #'tree-equal digef (digef<-gef (gef<-digef digef)))
-      (assert-equality #'tree-equal digef (digef<-diadj (diadj<-digef digef)))
-      (assert-equality #'tree-equal digef (digef<-lagef (lagef<-digef digef)))
-      (assert-equality #'tree-equal digef (digef<-laadj (laadj<-digef digef)))
-      (assert-equality #'tree-equal diadj (diadj<-adj (adj<-diadj diadj)))
-      (assert-equality #'tree-equal diadj (diadj<-gef (gef<-diadj diadj)))
-      (assert-equality #'tree-equal diadj (diadj<-digef (digef<-diadj diadj)))
-      (assert-equality #'tree-equal diadj (diadj<-lagef (lagef<-diadj diadj)))
-      (assert-equality #'tree-equal diadj (diadj<-laadj (laadj<-diadj diadj)))
-      (assert-equality #'tree-equal lagef (lagef<-adj (adj<-lagef lagef)))
-      (assert-equality #'tree-equal lagef (lagef<-gef (gef<-lagef lagef)))
-      (assert-equality #'tree-equal lagef (lagef<-diadj (diadj<-lagef lagef)))
-      (assert-equality #'tree-equal lagef (lagef<-digef (digef<-lagef lagef)))
-      (assert-equality #'tree-equal lagef (lagef<-laadj (laadj<-lagef lagef)))
-      (assert-equality #'tree-equal laadj (laadj<-adj (adj<-laadj laadj)))
-      (assert-equality #'tree-equal laadj (laadj<-gef (gef<-laadj laadj)))
-      (assert-equality #'tree-equal laadj (laadj<-digef (digef<-laadj laadj)))
-      (assert-equality #'tree-equal laadj (laadj<-diadj (diadj<-laadj laadj)))
-      (assert-equality #'tree-equal laadj (laadj<-lagef (lagef<-laadj laadj)))))
+    (let ((graph (mk-graph '((b c d f g h k) ((b c) (b f) (c f) (f k) (g h)))))
+	  (graph-adj (mk-graph '((b (c f)) (c (b f)) (d ()) (f (b c k)) (g (h)) (h (g)) (k (f)))))
+	  (digraph (mk-digraph '((b c d f g h k) ((b c) (c b) (b f) (f b) (c f) (f c) (f k) (k f) (g h) (h g)))))
+	  (digraph-adj (mk-digraph '((b (c f)) (c (b f)) (d ()) (f (b c k)) (g (h)) (h (g)) (k (f)))))
+	  (labeled-graph (mk-labeled-graph '((b c d f g h k) ((b c 1) (b f 1) (c f 1) (f k 1) (g h 1)))))
+	  (labeled-graph-adj
+	   (mk-labeled-graph '((b ((c 1)(f 1))) (c ((b 1) (f 1))) (d ()) (f ((b 1) (c 1) (k 1))) (g ((h 1))) (h ((g 1))) (k ((f 1)))))))
+      (assert-equality #'graph-equal graph-adj (convert-to 'adjacency graph))
+      (assert-equality #'graph-equal digraph-adj (convert-to 'adjacency digraph))
+      (assert-equality #'graph-equal labeled-graph-adj (convert-to 'adjacency labeled-graph))))
