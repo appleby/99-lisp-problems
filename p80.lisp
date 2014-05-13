@@ -9,7 +9,7 @@
 (in-package :99)
 
 (defclass graph ()
-  ((graph-list :accessor graph-list :initarg :data :initform '())))
+  ((graph-data :accessor graph-data :initarg :data :initform '())))
 
 (defclass undirected-graph (graph) ())
 (defclass directed-graph (graph) ())
@@ -19,8 +19,8 @@
 
 (defmethod print-object ((object graph) stream)
   (print-unreadable-object (object stream :type t)
-    (with-slots (graph-list) object
-      (format stream "~a" graph-list))))
+    (with-slots (graph-data) object
+      (format stream "~a" graph-data))))
 
 (defun mk-graph (data)
   (make-instance 'undirected-graph :data (copy-seq data)))
@@ -41,27 +41,27 @@
   (:documentation "Convert given GRAPH to an adjacency-list."))
 
 (defmethod adjacency ((graph undirected-graph))
-  (destructuring-bind (nodes edges) (graph-list graph)
+  (destructuring-bind (nodes edges) (graph-data graph)
     (loop for node in nodes collect
 	 (list node (loop for (n1 n2) in edges
 		       when (eq node n1) collect n2
 		       when (eq node n2) collect n1)))))
 
 (defmethod adjacency ((graph directed-graph))
-  (destructuring-bind (nodes edges) (graph-list graph)
+  (destructuring-bind (nodes edges) (graph-data graph)
     (loop for node in nodes collect
 	 (list node (loop for (n1 n2) in edges
 		       when (eq node n1) collect n2)))))
 
 (defmethod adjacency ((graph labeled-undirected-graph))
-  (destructuring-bind (nodes edges) (graph-list graph)
+  (destructuring-bind (nodes edges) (graph-data graph)
     (loop for node in nodes collect
 	 (list node (loop for (n1 n2 label) in edges
 		       when (eq node n1) collect (list n2 label)
 		       when (eq node n2) collect (list n1 label))))))
 
 (defmethod adjacency ((graph labeled-directed-graph))
-  (destructuring-bind (nodes edges) (graph-list graph)
+  (destructuring-bind (nodes edges) (graph-data graph)
     (loop for node in nodes collect
 	 (list node (loop for (n1 n2 label) in edges
 		       when (eq node n1) collect (list n2 label))))))
@@ -73,7 +73,7 @@
   (make-instance (class-of graph) :data (adjacency graph)))
 
 (defmethod convert-to ((_ (eql 'undirected)) (graph directed-graph))
-  (destructuring-bind (directed-nodes directed-edges) (graph-list graph)
+  (destructuring-bind (directed-nodes directed-edges) (graph-data graph)
     (mk-graph
      (list directed-nodes
 	   (loop for (n1 n2) in directed-edges
@@ -82,15 +82,15 @@
 	      finally (return edges))))))
 
 (defmethod convert-to ((_ (eql 'undirected)) (graph labeled-undirected-graph))
-  (destructuring-bind (nodes edges) (graph-list graph)
+  (destructuring-bind (nodes edges) (graph-data graph)
     (mk-graph (list nodes (drop-labels edges)))))
 
 (defmethod convert-to ((_ (eql 'undirected)) (graph labeled-directed-graph))
-  (destructuring-bind (nodes edges) (graph-list graph)
+  (destructuring-bind (nodes edges) (graph-data graph)
     (convert-to 'undirected (mk-digraph (list nodes (drop-labels edges))))))
 
 (defun graph-equal (a b)
-  (tree-equal (graph-list a) (graph-list b)))
+  (tree-equal (graph-data a) (graph-data b)))
 
 (defmacro assert-graph-equal (graph-a graph-b &rest extras)
   `(assert-equality #'graph-equal ,graph-a ,graph-b ,extras))
