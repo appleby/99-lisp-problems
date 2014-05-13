@@ -11,7 +11,7 @@
 ;;;; Define the syntax of the string and write a function (tree
 ;;;; string) to construct the tree when the string is given. Work with
 ;;;; lists (instead of strings). Write also an inverse function.
-(in-packge :99)
+(in-package :99)
 
 (defun mw-tree-rep-action (rep)
   (if (not (listp rep))
