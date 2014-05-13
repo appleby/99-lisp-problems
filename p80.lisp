@@ -17,6 +17,11 @@
 (defclass labeled-undirected-graph (labeled-graph undirected-graph) ())
 (defclass labeled-directed-graph (labeled-graph directed-graph) ())
 
+(defmethod print-object ((object graph) stream)
+  (print-unreadable-object (object stream :type t)
+    (with-slots (graph-list) object
+      (format stream "~a" graph-list))))
+
 (defun mk-graph (data)
   (make-instance 'undirected-graph :data (copy-seq data)))
 
@@ -28,6 +33,9 @@
 
 (defun mk-labeled-digraph (data)
   (make-instance 'labeled-directed-graph :data (copy-seq data)))
+
+(defun drop-labels (edges)
+  (loop for (n1 n2 nil) in edges collect (list n1 n2)))
 
 (defgeneric adjacency (graph)
   (:documentation "Convert given GRAPH to an adjacency-list."))
@@ -69,27 +77,64 @@
     (mk-graph
      (list directed-nodes
 	   (loop for (n1 n2) in directed-edges
-	      unless (member n1 edges :key #'second)
+	      unless (member (list n2 n1) edges :test #'equal)
 	      collect (list n1 n2) into edges
 	      finally (return edges))))))
 
 (defmethod convert-to ((_ (eql 'undirected)) (graph labeled-undirected-graph))
-  graph)
+  (destructuring-bind (nodes edges) (graph-list graph)
+    (mk-graph (list nodes (drop-labels edges)))))
 
 (defmethod convert-to ((_ (eql 'undirected)) (graph labeled-directed-graph))
-  graph)
+  (destructuring-bind (nodes edges) (graph-list graph)
+    (convert-to 'undirected (mk-digraph (list nodes (drop-labels edges))))))
 
 (defun graph-equal (a b)
   (tree-equal (graph-list a) (graph-list b)))
 
+(defmacro assert-graph-equal (graph-a graph-b &rest extras)
+  `(assert-equality #'graph-equal ,graph-a ,graph-b ,extras))
+
+;;; I believe there are errors in the representations of certain
+;;; graphs given in the examples for this question (errors that also
+;;; exist in the original prolog problems). For example, for the
+;;; digraph
+;;;     ( (r s t u v) ( (s r) (s u) (u r) (u s) (v u) ) ) the
+;;; given adjacency list form is
+;;;     ( (r ()) (s (r u)) (t ()) (u (r)) (v (u)) )
+;;; which should probably instead be
+;;;     ( (r ()) (s (r u)) (t ()) (u (r s)) (v (u)) )
+;;;
+;;; Also, the graph-expression-form of the labeled digraph is given
+;;; as:
+;;;     ( (k m p q) ( (m p 7) ...
+;;; which should instead be
+;;;     ( (k m p q) ( (m q 7) ...
+(define-test graph-adjacency-test
+    (let ((inputs '((undirected-graph
+		     ((b c d f g h k) ((b c) (b f) (c f) (f k) (g h)))
+		     ((b (c f)) (c (b f)) (d ()) (f (b c k)) (g (h)) (h (g)) (k (f))))
+		    (directed-graph
+		     ((r s t u v) ((s r) (s u) (u r) (u s) (v u)))
+		     ((r ()) (s (r u)) (t ()) (u (r s)) (v (u))))
+		    (labeled-undirected-graph
+		     ((b c d f g h k) ((b c 1) (b f 2) (c f 3) (f k 4) (g h 5)))
+		     ((b ((c 1) (f 2))) (c ((b 1) (f 3))) (d ()) (f ((b 2) (c 3) (k 4))) (g ((h 5))) (h ((g 5))) (k ((f 4)))))
+		    (labeled-directed-graph
+		     ((k m p q) ((m q 7) (p m 5) (p q 9)))
+		     ((k ()) (m ((q 7))) (p ((m 5) (q 9))) (q ()))))))
+      (loop
+	 for (class graph-expression-form adjacency-list) in inputs
+	 for gef = (make-instance class :data graph-expression-form)
+	 for adj = (make-instance class :data adjacency-list)
+	 do (assert-graph-equal adj (convert-to 'adjacency gef)))))
+
 (define-test graph-to-*-test
     (let ((graph (mk-graph '((b c d f g h k) ((b c) (b f) (c f) (f k) (g h)))))
-	  (graph-adj (mk-graph '((b (c f)) (c (b f)) (d ()) (f (b c k)) (g (h)) (h (g)) (k (f)))))
 	  (digraph (mk-digraph '((b c d f g h k) ((b c) (c b) (b f) (f b) (c f) (f c) (f k) (k f) (g h) (h g)))))
-	  (digraph-adj (mk-digraph '((b (c f)) (c (b f)) (d ()) (f (b c k)) (g (h)) (h (g)) (k (f)))))
 	  (labeled-graph (mk-labeled-graph '((b c d f g h k) ((b c 1) (b f 1) (c f 1) (f k 1) (g h 1)))))
-	  (labeled-graph-adj
-	   (mk-labeled-graph '((b ((c 1)(f 1))) (c ((b 1) (f 1))) (d ()) (f ((b 1) (c 1) (k 1))) (g ((h 1))) (h ((g 1))) (k ((f 1)))))))
-      (assert-equality #'graph-equal graph-adj (convert-to 'adjacency graph))
-      (assert-equality #'graph-equal digraph-adj (convert-to 'adjacency digraph))
-      (assert-equality #'graph-equal labeled-graph-adj (convert-to 'adjacency labeled-graph))))
+	  (labeled-digraph (mk-labeled-digraph '((b c d f g h k)
+						 ((b c 1) (c b 1) (b f 1) (f b 1) (c f 1) (f c 1) (f k 1) (k f 1) (g h 1) (h g 1))))))
+      (assert-graph-equal graph (convert-to 'undirected digraph))
+      (assert-graph-equal graph (convert-to 'undirected labeled-graph))
+      (assert-graph-equal graph (convert-to 'undirected labeled-digraph))))
