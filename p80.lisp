@@ -22,17 +22,14 @@
     (with-slots (graph-data) object
       (format stream "~a" graph-data))))
 
-(defun mk-graph (nodes edges)
-  (make-instance 'undirected-graph :data (list nodes edges)))
+(defmacro defgraph-ctor (name class)
+  `(defun ,name (nodes edges)
+     (make-instance ',class :data (list nodes edges))))
 
-(defun mk-digraph (nodes edges)
-  (make-instance 'directed-graph :data (list nodes edges)))
-
-(defun mk-labeled-graph (nodes edges)
-  (make-instance 'labeled-undirected-graph :data (list nodes edges)))
-
-(defun mk-labeled-digraph (nodes edges)
-  (make-instance 'labeled-directed-graph :data (list nodes edges)))
+(defgraph-ctor mk-graph undirected-graph)
+(defgraph-ctor mk-digraph directed-graph)
+(defgraph-ctor mk-labeled-graph labeled-undirected-graph)
+(defgraph-ctor mk-labeled-digraph labeled-directed-graph)
 
 (defun drop-labels (edges)
   (loop for (n1 n2 nil) in edges collect (list n1 n2)))
