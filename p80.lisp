@@ -126,6 +126,25 @@
 	collect (list n1 n2 label) into edges
 	finally (return edges)))))
 
+(defmethod convert-to ((_ (eql 'labeled-digraph)) (graph undirected-graph))
+  (destructuring-bind (nodes edges) (graph-data graph)
+    (mk-labeled-digraph nodes (loop for label upfrom 1
+				 for (n1 n2) in edges
+				 collect (list n1 n2 label)
+				 collect (list n2 n1 label)))))
+
+(defmethod convert-to ((_ (eql 'labeled-digraph)) (graph directed-graph))
+  (destructuring-bind (nodes edges) (graph-data graph)
+    (mk-labeled-digraph nodes (loop for label upfrom 1
+			       for (n1 n2) in edges
+			       collect (list n1 n2 label)))))
+
+(defmethod convert-to ((_ (eql 'labeled-digraph)) (graph labeled-undirected-graph))
+  (destructuring-bind (nodes edges) (graph-data graph)
+    (mk-labeled-digraph nodes (loop for (n1 n2 label) in edges
+				 collect (list n1 n2 label)
+				 collect (list n2 n1 label)))))
+
 (defun graph-equal (a b)
   (tree-equal (graph-data a) (graph-data b)))
 
@@ -166,22 +185,20 @@
 	 for adj = (make-instance class :data adjacency-list)
 	 do (assert-graph-equal adj (convert-to 'adjacency gef)))))
 
-(define-test graph-to-*-test
+(define-test undirected-to-*-test
     (let ((graph (mk-graph '(b c d f g h k) '((b c) (b f) (c f) (f k) (g h))))
 	  (digraph (mk-digraph '(b c d f g h k) '((b c) (c b) (b f) (f b) (c f) (f c) (f k) (k f) (g h) (h g))))
 	  (labeled-graph (mk-labeled-graph '(b c d f g h k) '((b c 1) (b f 2) (c f 3) (f k 4) (g h 5))))
 	  (labeled-digraph
 	   (mk-labeled-digraph '(b c d f g h k)
 			       '((b c 1) (c b 1) (b f 2) (f b 2) (c f 3) (f c 3) (f k 4) (k f 4) (g h 5) (h g 5)))))
-      (assert-graph-equal graph (convert-to 'undirected digraph))
-      (assert-graph-equal graph (convert-to 'undirected labeled-graph))
-      (assert-graph-equal graph (convert-to 'undirected labeled-digraph))
       (assert-graph-equal digraph (convert-to 'directed graph))
-      (assert-graph-equal digraph (convert-to 'directed labeled-graph))
-      (assert-graph-equal digraph (convert-to 'directed labeled-digraph))
       (assert-graph-equal labeled-graph (convert-to 'labeled graph))
-      (assert-graph-equal labeled-graph (convert-to 'labeled digraph))
-      (assert-graph-equal labeled-graph (convert-to 'labeled labeled-digraph))))
+      (assert-graph-equal labeled-digraph (convert-to 'labeled-digraph graph))
+
+      (assert-graph-equal graph (convert-to 'undirected labeled-graph))
+      (assert-graph-equal digraph (convert-to 'directed labeled-graph))
+      (assert-graph-equal labeled-digraph (convert-to 'labeled-digraph labeled-graph))))
 
 (define-test digraph-to-*-test
     (let ((digraph (mk-digraph '(r s t u v) '((s r) (s u) (u r) (u s) (v u))))
@@ -189,8 +206,14 @@
 	  (labeled-graph (mk-labeled-graph '(r s t u v) '((s r 1) (s u 2) (u r 3) (v u 4))))
 	  (labeled-digraph (mk-labeled-digraph '(r s t u v) '((s r 1) (s u 2) (u r 3) (u s 4) (v u 5)))))
       (assert-graph-equal graph (convert-to 'undirected digraph))
-      (assert-graph-equal graph (convert-to 'undirected labeled-graph))
+      (assert-graph-equal labeled-graph (convert-to 'labeled digraph))
+      (assert-graph-equal labeled-digraph (convert-to 'labeled-digraph digraph))))
+
+(define-test labeled-digraph-to-*-test
+    (let ((labeled-digraph (mk-labeled-digraph '(k m p q) '((m q 7) (p m 5) (p q 9) (q m 11))))
+	  (graph (mk-graph '(k m p q) '((m q) (p m) (p q))))
+	  (digraph (mk-digraph '(k m p q) '((m q) (p m) (p q) (q m))))
+	  (labeled-graph (mk-labeled-graph '(k m p q) '((m q 7) (p m 5) (p q 9)))))
       (assert-graph-equal graph (convert-to 'undirected labeled-digraph))
       (assert-graph-equal digraph (convert-to 'directed labeled-digraph))
-      (assert-graph-equal labeled-graph (convert-to 'labeled graph))
-      (assert-graph-equal labeled-graph (convert-to 'labeled digraph))))
+      (assert-graph-equal labeled-graph (convert-to 'labeled labeled-digraph))))
