@@ -122,7 +122,7 @@
      directed-nodes
      (loop
 	for (n1 n2 label) in directed-edges
-	unless (member (list n2 n1 label) edges :test #'equal)
+	unless (member (list n2 n1) edges :test #'equal :key #'butlast)
 	collect (list n1 n2 label) into edges
 	finally (return edges)))))
 
@@ -182,3 +182,15 @@
       (assert-graph-equal labeled-graph (convert-to 'labeled graph))
       (assert-graph-equal labeled-graph (convert-to 'labeled digraph))
       (assert-graph-equal labeled-graph (convert-to 'labeled labeled-digraph))))
+
+(define-test digraph-to-*-test
+    (let ((digraph (mk-digraph '(r s t u v) '((s r) (s u) (u r) (u s) (v u))))
+	  (graph (mk-graph '(r s t u v) '((s r) (s u) (u r) (v u))))
+	  (labeled-graph (mk-labeled-graph '(r s t u v) '((s r 1) (s u 2) (u r 3) (v u 4))))
+	  (labeled-digraph (mk-labeled-digraph '(r s t u v) '((s r 1) (s u 2) (u r 3) (u s 4) (v u 5)))))
+      (assert-graph-equal graph (convert-to 'undirected digraph))
+      (assert-graph-equal graph (convert-to 'undirected labeled-graph))
+      (assert-graph-equal graph (convert-to 'undirected labeled-digraph))
+      (assert-graph-equal digraph (convert-to 'directed labeled-digraph))
+      (assert-graph-equal labeled-graph (convert-to 'labeled graph))
+      (assert-graph-equal labeled-graph (convert-to 'labeled digraph))))
