@@ -34,34 +34,34 @@
 (defun drop-labels (edges)
   (loop for (n1 n2 nil) in edges collect (list n1 n2)))
 
+(defmacro adjacency-with-edges (graph node edge-binding-form &body collect-forms)
+  (with-gensyms (nodes edges)
+    `(destructuring-bind (,nodes ,edges) (graph-data ,graph)
+       (loop for ,node in ,nodes collect
+	    (list ,node (loop for ,edge-binding-form in ,edges
+			     ,@(loop for (test-form collect-form) in collect-forms
+				  append `(when ,test-form collect ,collect-form))))))))
+
 (defgeneric adjacency (graph)
   (:documentation "Convert given GRAPH to an adjacency-list."))
 
 (defmethod adjacency ((graph undirected-graph))
-  (destructuring-bind (nodes edges) (graph-data graph)
-    (loop for node in nodes collect
-	 (list node (loop for (n1 n2) in edges
-		       when (eq node n1) collect n2
-		       when (eq node n2) collect n1)))))
+  (adjacency-with-edges graph node (n1 n2)
+    ((eq node n1) n2)
+    ((eq node n2) n1)))
 
 (defmethod adjacency ((graph directed-graph))
-  (destructuring-bind (nodes edges) (graph-data graph)
-    (loop for node in nodes collect
-	 (list node (loop for (n1 n2) in edges
-		       when (eq node n1) collect n2)))))
+  (adjacency-with-edges graph node (n1 n2)
+    ((eq node n1) n2)))
 
 (defmethod adjacency ((graph labeled-undirected-graph))
-  (destructuring-bind (nodes edges) (graph-data graph)
-    (loop for node in nodes collect
-	 (list node (loop for (n1 n2 label) in edges
-		       when (eq node n1) collect (list n2 label)
-		       when (eq node n2) collect (list n1 label))))))
+  (adjacency-with-edges graph node (n1 n2 label)
+    ((eq node n1) (list n2 label))
+    ((eq node n2) (list n1 label))))
 
 (defmethod adjacency ((graph labeled-directed-graph))
-  (destructuring-bind (nodes edges) (graph-data graph)
-    (loop for node in nodes collect
-	 (list node (loop for (n1 n2 label) in edges
-		       when (eq node n1) collect (list n2 label))))))
+  (adjacency-with-edges graph node (n1 n2 label)
+    ((eq node n1) (list n2 label))))
 
 (defgeneric convert-to (to from)
   (:documentation "Convert between graph types."))
