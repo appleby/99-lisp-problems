@@ -11,11 +11,12 @@
 (defclass graph ()
   ((graph-data :accessor graph-data :initarg :data :initform '())))
 
-(defclass undirected-graph (graph) ())
-(defclass directed-graph (graph) ())
-(defclass labeled-graph (graph) ())
-(defclass labeled-undirected-graph (labeled-graph undirected-graph) ())
-(defclass labeled-directed-graph (labeled-graph directed-graph) ())
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defclass undirected-graph (graph) ())
+  (defclass directed-graph (graph) ())
+  (defclass labeled-graph (graph) ())
+  (defclass labeled-undirected-graph (labeled-graph undirected-graph) ())
+  (defclass labeled-directed-graph (labeled-graph directed-graph) ()))
 
 (defmethod print-object ((object graph) stream)
   (print-unreadable-object (object stream :type t)
@@ -34,34 +35,28 @@
 (defun drop-labels (edges)
   (loop for (n1 n2 nil) in edges collect (list n1 n2)))
 
-(defmacro adjacency-with-edges (graph node edge-binding-form &body collect-forms)
-  (with-gensyms (nodes edges)
-    `(destructuring-bind (,nodes ,edges) (graph-data ,graph)
-       (loop for ,node in ,nodes collect
-	    (list ,node (loop for ,edge-binding-form in ,edges
-			     ,@(loop for (test-form collect-form) in collect-forms
-				  append `(when ,test-form collect ,collect-form))))))))
+(defmacro defadjacency-method (graph-type)
+  (with-gensyms (graph n1 n2 label node nodes edges)
+    (let* ((is-labeled (subtypep graph-type 'labeled-graph))
+	   (is-directed (subtypep graph-type 'directed-graph))
+	   (edge-binding-form (if is-labeled `(,n1 ,n2 ,label) `(,n1 ,n2)))
+	   (test-forms (if is-directed `((eq ,node ,n1)) `((eq ,node ,n1) (eq ,node ,n2))))
+	   (collect-forms (if is-labeled `((list ,n2 ,label) (list ,n1 ,label)) `(,n2 ,n1)))
+	   (test-collect-forms (mapcar #'list test-forms collect-forms)))
+      `(defmethod adjacency ((,graph ,graph-type))
+	 (destructuring-bind (,nodes ,edges) (graph-data ,graph)
+	   (loop for ,node in ,nodes collect
+		(list ,node (loop for ,edge-binding-form in ,edges
+				 ,@(loop for (test-form collect-form) in test-collect-forms
+				      append `(when ,test-form collect ,collect-form))))))))))
 
 (defgeneric adjacency (graph)
   (:documentation "Convert given GRAPH to an adjacency-list."))
 
-(defmethod adjacency ((graph undirected-graph))
-  (adjacency-with-edges graph node (n1 n2)
-    ((eq node n1) n2)
-    ((eq node n2) n1)))
-
-(defmethod adjacency ((graph directed-graph))
-  (adjacency-with-edges graph node (n1 n2)
-    ((eq node n1) n2)))
-
-(defmethod adjacency ((graph labeled-undirected-graph))
-  (adjacency-with-edges graph node (n1 n2 label)
-    ((eq node n1) (list n2 label))
-    ((eq node n2) (list n1 label))))
-
-(defmethod adjacency ((graph labeled-directed-graph))
-  (adjacency-with-edges graph node (n1 n2 label)
-    ((eq node n1) (list n2 label))))
+(defadjacency-method undirected-graph)
+(defadjacency-method directed-graph)
+(defadjacency-method labeled-undirected-graph)
+(defadjacency-method labeled-directed-graph)
 
 (defgeneric convert-to (to from)
   (:documentation "Convert between graph types."))
