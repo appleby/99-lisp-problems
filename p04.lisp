@@ -4,4 +4,4 @@
 (defun p04-length (lst)
   (if (null lst)
       0
-      (1+ (p04-recur (cdr lst)))))
+      (1+ (p04-length (cdr lst)))))
