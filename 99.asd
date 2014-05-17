@@ -12,5 +12,5 @@
   :description "Solutions to the 99-Lisp problems."
   :author "Mike Appleby"
   :license "Nobody cares."
-  :depends-on (#:cl-heap #:com.informatimago.rdp #:lisp-unit #:split-sequence)
+  :depends-on (#:alexandria #:cl-heap #:com.informatimago.rdp #:lisp-unit #:split-sequence)
   :components #.(files-matching-pattern "p*.lisp" :depends '("package")))
