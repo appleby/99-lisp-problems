@@ -87,8 +87,7 @@
 
 (defmethod convert-to ((_ (eql 'directed)) (graph labeled-undirected-graph))
   (destructuring-bind (nodes edges) (graph-data graph)
-    (mk-digraph nodes (loop for (n1 n2) in (drop-labels edges)
-			 collect (list n1 n2) collect (list n2 n1)))))
+    (convert-to 'directed (mk-graph nodes (drop-labels edges)))))
 
 (defmethod convert-to ((_ (eql 'directed)) (graph labeled-directed-graph))
   (destructuring-bind (nodes edges) (graph-data graph)
@@ -101,15 +100,7 @@
 			       collect (list n1 n2 label)))))
 
 (defmethod convert-to ((_ (eql 'labeled)) (graph directed-graph))
-  (destructuring-bind (directed-nodes directed-edges) (graph-data graph)
-    (mk-labeled-graph
-     directed-nodes
-     (loop
-	with label = 1
-	for (n1 n2) in directed-edges
-	unless (member (list n2 n1) edges :test #'equal :key #'butlast)
-	collect (list n1 n2 label) into edges and do (incf label)
-	finally (return edges)))))
+  (convert-to 'labeled (convert-to 'undirected graph)))
 
 (defmethod convert-to ((_ (eql 'labeled)) (graph labeled-directed-graph))
   (destructuring-bind (directed-nodes directed-edges) (graph-data graph)
