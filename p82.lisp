@@ -12,13 +12,22 @@
 ;;; both cases, I think one should not repeat intermediate verticies.
 (in-package :99)
 
-(defun cycle (g a &optional (current-node a) visited directed)
-  (if (and (> (length visited) 0) (eq a current-node))
-      (and (> (length visited) (if directed 0 2)) (list (reverse (cons current-node visited))))
-      (loop
-	 for next-node in (set-difference (adjacent-nodes g current-node) (butlast visited))
-	 for path = (cycle g a next-node (cons current-node visited) directed)
-	 if path append path)))
+(defun length-less-than (n)
+  (lambda (lst) (< (length lst) n)))
+
+;;; Slightly more efficient iterative solution, for comparison.
+;; (defun cycle (g a &optional directed)
+;;   (let ((min-length (if directed 1 3))
+;; 	(paths '()))
+;;     (dolist (node (adjacent-nodes g a) paths)
+;;       (dolist (path (path g node a))
+;; 	(if (>= (length path) min-length)
+;; 	    (pushnew (cons a path) paths))))))
+
+(defun cycle (g a &optional directed)
+  (mapcar (lambda (p) (cons a p))
+	  (remove-if (length-less-than (if directed 1 3))
+		     (mapcan (lambda (n) (path g n a)) (adjacent-nodes g a)))))
 
 (define-test cycle-test
   (let ((graphs-inputs
@@ -31,4 +40,4 @@
     (loop for (graph-type graph inputs) in graphs-inputs do
 	 (loop for (start cycles) in inputs do
 	      (assert-equality (lambda (x y) (set-equal x y :test #'equal))
-			       cycles (cycle graph start start nil (eq graph-type 'directed)))))))
+			       cycles (cycle graph start (eq graph-type 'directed)))))))
