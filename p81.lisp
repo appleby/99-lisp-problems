@@ -20,7 +20,7 @@
   (let ((graphs-inputs
 	 '((((b (c f)) (c (b f)) (d ()) (f (b c k)) (g (h)) (h (g)) (k (f)))
 	    ((b b ((b))) (b k ((b f k) (b c f k))) (b d ()) (g h ((g h)))))
-	   (((r ()) (s (r u)) (t ()) (u (r)) (v (u)))
+	   (((r ()) (s (r u)) (t ()) (u (r s)) (v (u)))
 	    ((r u ()) (u r ((u r))) (s r ((s r) (s u r))) (t u ()) (u v ()) (v u ((v u))))))))
     (loop for (graph inputs) in graphs-inputs do
 	 (loop for (from to paths) in inputs do
