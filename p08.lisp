@@ -17,3 +17,8 @@
 		(recur (cdr lst) prev))
 	       (t (cons (car lst) (recur (cdr lst) (car lst)))))))
     (recur lst nil)))
+
+(define-test compress-test
+  (assert-equal '() (compress '()))
+  (assert-equal '(a b c) (compress '(a b c)))
+  (assert-equal '(a b c a d e) (compress '(a a a a b c c a a d e e e e))))

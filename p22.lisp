@@ -22,3 +22,9 @@
   (multiple-value-bind (succ done)
       (if (< start end) (values #'1+ #'>) (values #'1- #'<))
     (loop for i = start then (funcall succ i) until (funcall done i end) collect i)))
+
+(define-test range-test
+  (dolist (test-fn (list #'range #'range-do #'range-mvb-loop))
+    (assert-equal '(0) (funcall test-fn 0 0))
+    (assert-equal '(0 1) (funcall test-fn 0 1))
+    (assert-equal '(4 5 6 7 8 9) (funcall test-fn 4 9))))

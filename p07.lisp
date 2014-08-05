@@ -11,3 +11,7 @@
     ((null lst) '())
     ((atom lst) (list lst))
     (t (append (flatten (car lst)) (flatten (cdr lst))))))
+
+(define-test flatten-test
+  (assert-equal '() (flatten '()))
+  (assert-equal '(a b c d e) (flatten '(a (b (c d) e)))))

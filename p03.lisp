@@ -7,3 +7,6 @@
 
 (defun element-at (lst n)
   (nth (1- n) lst))
+
+(define-test element-at-test
+  (assert-eq 'c (element-at '(a b c d e) 3)))

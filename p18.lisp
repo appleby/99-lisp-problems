@@ -15,3 +15,7 @@
   (loop for elem in lst
         for idx from 1 upto end
         when (>= idx start) collect elem))
+
+(define-test slice-test
+  (assert-equal '() (slice '() 1 1))
+  (assert-equal '(c d e f g) (slice '(a b c d e f g h i k) 3 7)))

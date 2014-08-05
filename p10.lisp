@@ -29,3 +29,9 @@
        when (eql cur next) do (incf n)
        else collect (list (1+ n) cur)
             and do (setf n 0)))
+
+(define-test encode-test
+  (dolist (test-fn (list #'encode #'encode-loop))
+    (assert-equal '() (funcall test-fn '()))
+    (assert-equal '((4 a) (1 b) (2 c) (2 a) (1 d)(4 e))
+		  (funcall test-fn '(a a a a b c c a a d e e e e)))))

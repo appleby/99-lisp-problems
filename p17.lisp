@@ -2,7 +2,7 @@
 ;;;; given. Do not use any predefined predicates.
 ;;;; Example:
 ;;;; * (split '(a b c d e f g h i k) 3)
-;;;; ( (A B C) (D E F G H I K))
+;;;; ((A B C) (D E F G H I K))
 (in-package :99)
 
 (defun split (lst n)
@@ -15,3 +15,7 @@
 	       ((zerop n) (cons (reverse acc) (list (recur ll (1- n) nil))))
 	       (t (recur (cdr ll) (1- n) (cons (car ll) acc))))))
 	   (recur lst n nil)))
+
+(define-test split-test
+  (assert-equal '() (split '() 1))
+  (assert-equal '((a b c) (d e f g h i k)) (split '(a b c d e f g h i k) 3)))

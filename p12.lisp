@@ -10,3 +10,7 @@
 		(loop repeat (first x) collect (second x))
 		(list x)))
 	  rl-encoded-lst))
+
+(define-test decode-test
+  (assert-equal '() (decode '()))
+  (assert-equal '(a a a a b c c a a d e e e e) (decode '((4 a) b (2 c) (2 a) d (4 e)))))

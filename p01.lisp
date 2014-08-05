@@ -8,3 +8,6 @@
   (if (cdr lst)
       (my-last (cdr lst))
       lst))
+
+(define-test my-last-test
+  (assert-equal '(d) (my-last '(a b c d))))

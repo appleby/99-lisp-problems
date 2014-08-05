@@ -11,8 +11,17 @@
 (in-package :99)
 
 (defun rotate (lst n)
-  (let ((split-point (mod n (length lst))))
-    (if (zerop split-point)
-	(copy-list lst)
-	(destructuring-bind (head tail) (split lst split-point)
-	  (append tail head)))))
+  (if (null lst)
+      nil
+      (let ((split-point (mod n (length lst))))
+	(if (zerop split-point)
+	    (copy-list lst)
+	    (destructuring-bind (head tail) (split lst split-point)
+	      (append tail head))))))
+
+(define-test rotate-test
+  (assert-equal '() (rotate '() 10))
+  (assert-equal '(a b c) (rotate '(a b c) 0))
+  (assert-equal '(a b c) (rotate '(a b c) 3))
+  (assert-equal '(d e f g h a b c) (rotate '(a b c d e f g h) 3))
+  (assert-equal '(g h a b c d e f) (rotate '(a b c d e f g h) -2)))

@@ -10,3 +10,7 @@
      for i = (1- n) then (1- i)
      when (zerop i) do (setf i n)
      else collect e))
+
+(define-test drop-test
+  (assert-equal '() (drop '() 0))
+  (assert-equal '(a b d e g h k) (drop '(a b c d e f g h i k) 3)))

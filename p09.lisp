@@ -16,3 +16,7 @@
 		  (recur (cdr lst) (cons this acc)))
 		 (t (cons (cons this acc) (recur (cdr lst) '())))))))
     (recur lst '())))
+
+(define-test pack-test
+  (assert-equal '() (pack '()))
+  (assert-equal '((a a a a) (b) (c c) (a a) (d) (e e e e)) (pack '(a a a a b c c a a d e e e e))))

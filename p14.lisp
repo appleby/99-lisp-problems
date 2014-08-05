@@ -6,3 +6,7 @@
 
 (defun dupli (lst)
   (mapcan (lambda (x) (list x x)) lst))
+
+(define-test dupli-test
+  (assert-equal '() (dupli '()))
+  (assert-equal '(a a b b c c c c d d) (dupli '(a b c c d))))
