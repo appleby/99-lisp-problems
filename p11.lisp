@@ -9,20 +9,20 @@
 ;;;; ((4 A) B (2 C) (2 A) D (4 E))
 (in-package :99)
 
-(defun p11-encode (lst)
+(defun encode-modified (lst)
   (mapcar (lambda (sub-list)
 	    (let ((len (length sub-list))
 		  (elem (car sub-list)))
 	      (if (> len 1)
 		  (list len elem)
 		  elem)))
-	  (p09-pack lst)))
+	  (pack lst)))
 
 ;;; The question specifically said to use the result of the last
 ;;; question; otherwise, it'd be better not to cons up the sublists
 ;;; and instead just keep a count of run-length and collect (N E)
 ;;; pairs in a loop, like so.
-(defun p11-encode-loop (lst)
+(defun encode-modified-loop (lst)
   (loop
        with n = 0
        for (cur . rest) on lst

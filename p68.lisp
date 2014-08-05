@@ -38,7 +38,7 @@
 	((null inorder-right)
 	 (list preorder nil))
 	(t
-	 (p17-split preorder (position (car inorder-right) preorder)))))
+	 (split preorder (position (car inorder-right) preorder)))))
 
 (defun pre-in-tree (preorder inorder)
   (if (or (null preorder) (null inorder))

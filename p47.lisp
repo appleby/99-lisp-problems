@@ -33,7 +33,7 @@
 ;;; expressions. I wanted to try transforming the infix expressions to
 ;;; prefix and eval'ing the result. The next problem is to generalize
 ;;; this to N free variables, so I'll write an evaluator for that one.
-(defun p47-table (sym1 sym2 infix-expr)
+(defun table (sym1 sym2 infix-expr)
   (loop for a in '(t nil) do
        (loop for b in '(t nil)
 	     for expr = (infix->prefix (bind-vars infix-expr sym1 a sym2 b))

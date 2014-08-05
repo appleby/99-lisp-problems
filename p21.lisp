@@ -4,7 +4,7 @@
 ;;;; (A ALFA B C D)
 (in-package :99)
 
-(defun p21-insert-at (new-elem lst n)
+(defun insert-at (new-elem lst n)
   (loop for elem in lst
         for idx upfrom 1
         if (= idx n) collect new-elem

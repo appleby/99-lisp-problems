@@ -15,7 +15,7 @@
 
 (in-package :99)
 
-(defun p58-sym-cbal-trees (n)
-  (loop for tree in (p55-cbal-tree n)
-     when (p56-symmetric tree)
+(defun sym-cbal-trees (n)
+  (loop for tree in (cbal-tree n)
+     when (symmetric tree)
      collect tree))

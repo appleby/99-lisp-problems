@@ -18,17 +18,17 @@
 
 (in-package :99)
 
-(defun p59-hbal-tree (n)
+(defun hbal-tree (n)
   (cond ((<= n 0) (list (make-empty-tree)))
 	((= n 1) (list (make-leaf-node)))
 	(t (extend-trees
-	    (append (generate-subtrees #'p59-hbal-tree (- n 1) (- n 1))
-		    (generate-subtrees #'p59-hbal-tree (- n 1) (- n 2)))))))
+	    (append (generate-subtrees #'hbal-tree (- n 1) (- n 1))
+		    (generate-subtrees #'hbal-tree (- n 1) (- n 2)))))))
 
-(defun p59-hbal-tree-print (n)
-  (loop for tree in (p59-hbal-tree n) do (print tree)))
+(defun hbal-tree-print (n)
+  (loop for tree in (hbal-tree n) do (print tree)))
 
-(define-test p59-hbal-tree-test
+(define-test hbal-tree-test
   (let ((inputs '((0 (NIL))
 		  (1 ((X NIL NIL)))
 		  (2 ((X (X NIL NIL) (X NIL NIL))
@@ -50,4 +50,4 @@
 		      (X (X NIL NIL) (X (X NIL NIL) NIL))
 		      (X (X NIL NIL) (X NIL (X NIL NIL))))))))
     (loop for (n expected) in inputs
-       do (assert-true (tree-solutions-valid expected (p59-hbal-tree n))))))
+       do (assert-true (tree-solutions-valid expected (hbal-tree n))))))

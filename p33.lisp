@@ -5,5 +5,5 @@
 ;;;; T
 (in-package :99)
 
-(defun p33-coprime (m n)
+(defun coprime (m n)
   (= (gcd m n) 1))

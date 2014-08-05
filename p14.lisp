@@ -4,5 +4,5 @@
 ;;;; (A A B B C C C C D D)
 (in-package :99)
 
-(defun p14-dupli (lst)
+(defun dupli (lst)
   (mapcan (lambda (x) (list x x)) lst))

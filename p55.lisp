@@ -40,19 +40,19 @@
   (mapcar (lambda (tree) (cons symbol tree)) trees))
 
 ;;; Should memoize.
-(defun p55-cbal-tree (n)
+(defun cbal-tree (n)
   (if (= n 0)
       (list *the-empty-tree*)
       (let* ((n1 (truncate (1- n) 2))
 	     (n2 (- n 1 n1)))
 	(extend-trees
-	 (generate-subtrees #'p55-cbal-tree n1 n2)))))
+	 (generate-subtrees #'cbal-tree n1 n2)))))
 
 (defun tree-solutions-valid (expected solutions)
   (every (lambda (tree) (member tree expected :test #'tree-equal))
 	 solutions))
 
-(define-test p55-cbal-tree
+(define-test cbal-tree
   (let ((inputs '((0 (NIL))
 		  (1 ((X NIL NIL)))
 		  (2 ((X NIL (X NIL NIL)) (X (X NIL NIL) NIL)))
@@ -64,4 +64,4 @@
 		      (X (X (X NIL NIL) NIL) (X NIL (X NIL NIL)))
 		      (X (X (X NIL NIL) NIL) (X (X NIL NIL) NIL)))))))
     (loop for (n expected) in inputs
-       do (assert-true (tree-solutions-valid expected (p55-cbal-tree n))))))
+       do (assert-true (tree-solutions-valid expected (cbal-tree n))))))

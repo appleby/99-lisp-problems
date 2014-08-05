@@ -16,10 +16,10 @@
 
 ;;; Note that there is an error in the equation given for phi,
 ;;; above. The series should be a product, not a sum.
-(defun p37-totient-phi (n)
-  (apply #'* (loop for (p m) in (p36-prime-factors-mult n)
+(defun totient-phi (n)
+  (apply #'* (loop for (p m) in (prime-factors-mult n)
 		collect (* (1- p) (expt p (1- m))))))
 
-(define-test p37-totient-phi-test
+(define-test totient-phi-test
   (loop for i from 2 upto 1000
-     do (assert-eql (p34-totient-phi i) (p37-totient-phi i))))
+     do (assert-eql (totient-phi i) (totient-phi i))))

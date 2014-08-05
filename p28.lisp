@@ -30,23 +30,23 @@
 (defun rl-encoded->alist (rl-encoded-list)
   (loop for lst in rl-encoded-list collect (cons (cadr lst) (car lst))))
 
-(defun p28-lsort (lst)
+(defun lsort (lst)
   (sort lst #'< :key #'length))
 
-(defun p28-lfsort (lst)
-  (let ((freqencies (rl-encoded->alist (p10-encode
+(defun lfsort (lst)
+  (let ((freqencies (rl-encoded->alist (encode
 					(sort (mapcar #'length lst) #'<)))))
     (stable-sort lst #'< :key (lambda (x) (cdr (assoc (length x) freqencies))))))
 
-(define-test p28-lsort-known-solutions
+(define-test lsort-known-solutions
   (let ((input '((a b c) (d e) (f g h) (d e) (i j k l) (m n) (o)))
 	(expected-solution '((O) (D E) (D E) (M N) (A B C) (F G H) (I J K L))))
-    (assert-equal expected-solution (p28-lsort (copy-list input)))))
+    (assert-equal expected-solution (lsort (copy-list input)))))
 
-(define-test p28-lfsort-known-solutions
+(define-test lfsort-known-solutions
   (let ((input '((a b c) (d e) (f g h) (d e) (i j k l) (m n) (o)))
 	(expected-solution '((i j k l) (o) (a b c) (f g h) (d e) (d e) (m n))))
-    (assert-equal expected-solution (p28-lfsort (copy-list input)))))
+    (assert-equal expected-solution (lfsort (copy-list input)))))
 
 (define-test rl-encoded->alist-test
   (let ((input '((1 A) (3 B) (2 C) (7 D)))

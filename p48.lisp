@@ -49,7 +49,7 @@
 	       (error "Invalid boolean operation '~a' in expression: ~a" op expr))))
 	(t (error "Invalid expression: ~a" expr))))
 
-(defun p48-table (vars expr)
+(defun table (vars expr)
   (flet ((print-column (value) (format t "~:[F~;T~] " value)))
     (loop for env in (generate-all-possible-bindings vars)
        do (loop for v in vars do (print-column (get-env v env)))

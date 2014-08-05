@@ -21,10 +21,10 @@
 ;;;     {xi ++ c | for xi in {x0, ..., x(n-k)} for c in C(k, {x(i+1), .., xn})}
 (in-package :99)
  
-(defun p26-combination (k lst)
+(defun combination (k lst)
   (if (= k 1)
       (loop for e in lst collect (list e))
       (loop for ll on lst
 	 while (>= (length ll) k)
-	 append (loop for c in (p26-combination (1- k) (cdr ll))
+	 append (loop for c in (combination (1- k) (cdr ll))
 		      collect (cons (car ll) c)))))

@@ -6,7 +6,7 @@
 ;;;; ((A A A A) (B) (C C) (A A) (D) (E E E E))
 (in-package :99)
 
-(defun p09-pack (lst)
+(defun pack (lst)
   (labels ((recur (lst acc)
 	     (let ((this (car lst))    ; relies on (car '()) ==> '()
 		   (next (cadr lst)))  ; likewise (cadr '()) ==> '()

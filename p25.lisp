@@ -5,5 +5,5 @@
 ;;;; Hint: Use the solution of problem P23.
 (in-package :99)
 
-(defun p25-rnd-permu (lst)
-  (p23-rnd-select lst (length lst)))
+(defun rnd-permu (lst)
+  (rnd-select lst (length lst)))

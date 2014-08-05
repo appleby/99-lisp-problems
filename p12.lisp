@@ -4,10 +4,9 @@
 ;;;; P11. Construct its uncompressed version.
 (in-package :99)
 
-(defun p12-decode (rl-encoded-lst)
+(defun decode (rl-encoded-lst)
   (mapcan (lambda (x)
 	    (if (consp x)
 		(loop repeat (first x) collect (second x))
 		(list x)))
 	  rl-encoded-lst))
-	

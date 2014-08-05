@@ -14,20 +14,20 @@
 ;;;; (5 23)
 (in-package :99)
 
-(defun p40-goldbach (n)
-  (let* ((primes (p39-prime-range 2 (- n 2)))
+(defun goldbach (n)
+  (let* ((primes (prime-range 2 (- n 2)))
 	 (reverse-primes (reverse primes)))
     (loop for p1 in primes do
 	 (loop for p2 in reverse-primes
 	    for sum = (+ p1 p2)
 	    until (or (< sum n) (< p2 p1))
-	    when (= sum n) do (return-from p40-goldbach (list p1 p2))))))
+	    when (= sum n) do (return-from goldbach (list p1 p2))))))
 
-(define-test p40-goldbach-known-inputs
-  (assert-equal '(5 23) (p40-goldbach 28)))
+(define-test goldbach-known-inputs
+  (assert-equal '(5 23) (goldbach 28)))
 
-(define-test p40-goldbach-test
+(define-test goldbach-test
   (loop for i from 4 upto 1000 by 2
-     do (let ((result (p40-goldbach i)))
-	  (assert-true (every #'p31-is-prime result))
+     do (let ((result (goldbach i)))
+	  (assert-true (every #'is-prime result))
 	  (assert-eql i (apply #'+ result)))))

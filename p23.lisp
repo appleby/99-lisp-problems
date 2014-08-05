@@ -23,18 +23,18 @@
        (vector-push (aref vector idx) selected)
      when (= (length selected) n) return selected))
 
-(defun p23-rnd-select-knuth (lst n)
+(defun rnd-select-knuth (lst n)
   ;; Heavy lifting done by random-sample. Just convert between list
   ;; and array types.
   (let ((vector (make-array (length lst) :initial-contents lst)))
     (loop for x across (random-sample vector n) collecting x)))
 
-(defun p23-rnd-select (lst n)
+(defun rnd-select (lst n)
   ;; Implemented as suggested by hint
   (labels ((recur (ll selected)
 	     (cond
 	       ((null ll) nil)
 	       ((= selected n) nil)
 	       (t (let ((rnd-idx (1+ (random (length ll)))))
-		    (cons (p03-element-at ll rnd-idx) (recur (p20-remove-at ll rnd-idx) (1+ selected))))))))
+		    (cons (element-at ll rnd-idx) (recur (remove-at ll rnd-idx) (1+ selected))))))))
     (recur lst 0)))

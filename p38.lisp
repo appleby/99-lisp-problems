@@ -6,6 +6,6 @@
 ;;;; for efficiency. Try to calculate phi(10090) as an example.
 (in-package :99)
 
-(defun p38-compare-totients (n)
-  (time (loop repeat n do (p34-totient-phi 10090)))
-  (time (loop repeat n do (p37-totient-phi 10090))))
+(defun compare-totients (n)
+  (time (loop repeat n do (totient-phi 10090)))
+  (time (loop repeat n do (totient-phi 10090))))

@@ -10,9 +10,9 @@
 ;;;; * (encode-direct '(a a a a b c c a a d e e e e))
 ;;;; ((4 A) B (2 C) (2 A) D (4 E))
 
-;;; I already implemented this method as p11-encode-loop. Renaming it
-;;; here to p13-encode.
+;;; I already implemented this method as
+;;; encode-modified-loop. Renaming it here to encode-direct.
 (in-package :99)
 
-(defvar p13-encode)
-(setf (symbol-function 'p13-encode) #'p11-encode-loop)
+(defvar encode-direct)
+(setf (symbol-function 'encode-direct) #'encode-modified-loop)

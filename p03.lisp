@@ -5,5 +5,5 @@
 ;;;; C
 (in-package :99)
 
-(defun p03-element-at (lst n)
+(defun element-at (lst n)
   (nth (1- n) lst))

@@ -6,8 +6,8 @@
 ;;;; Hint: Use the predefined functions list and append.
 (in-package :99)
 
-(defun p07-flatten (lst)
+(defun flatten (lst)
   (cond
     ((null lst) '())
     ((atom lst) (list lst))
-    (t (append (p07-flatten (car lst)) (p07-flatten (cdr lst))))))
+    (t (append (flatten (car lst)) (flatten (cdr lst))))))

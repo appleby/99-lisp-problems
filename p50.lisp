@@ -75,11 +75,11 @@
      do (cl-heap:enqueue queue new-node (weight new-node))
      finally (return (cl-heap:dequeue queue))))
 
-(defun p50-huffman (symbol-frequencies)
+(defun huffman (symbol-frequencies)
   (encode-symbols (mapcar #'car symbol-frequencies)
 		  (make-huffman-tree symbol-frequencies)))
 
-(define-test p50-huffman-known-values
+(define-test huffman-known-values
   (let ((input '((a 45) (b 13) (c 12) (d 16) (e 9) (f 5)))
 	(expected '((A "0") (B "101") (C "100") (D "111") (E "1101") (F "1100"))))
-    (assert-equal expected (p50-huffman input))))
+    (assert-equal expected (huffman input))))

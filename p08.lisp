@@ -9,7 +9,7 @@
 ;;;; (A B C A D E)
 (in-package :99)
 
-(defun p08-compress (lst)
+(defun compress (lst)
   (labels ((recur (lst prev)
 	     (cond
 	       ((null lst) '())

@@ -4,7 +4,7 @@
 ;;;; (C D)
 (in-package :99)
 
-(defun p02-but-last (lst)
+(defun my-but-last (lst)
   (if (cddr lst)
-      (p02-but-last (cdr lst))
+      (my-but-last (cdr lst))
       lst))

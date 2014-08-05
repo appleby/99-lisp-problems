@@ -5,7 +5,7 @@
 ;;;; ( (A B C) (D E F G H I K))
 (in-package :99)
 
-(defun p17-split (lst n)
+(defun split (lst n)
   (when (not (plusp n))
     (error "n must be positive"))
   (labels ((recur (ll n acc)
@@ -15,4 +15,3 @@
 	       ((zerop n) (cons (reverse acc) (list (recur ll (1- n) nil))))
 	       (t (recur (cdr ll) (1- n) (cons (car ll) acc))))))
 	   (recur lst n nil)))
-  

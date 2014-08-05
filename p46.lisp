@@ -34,7 +34,7 @@
 (defun equ (a b)
   (not (xor a b)))
 
-(defun p46-table (sym1 sym2 expr)
+(defun table (sym1 sym2 expr)
   (loop for a in '(t nil)
      do (loop for b in '(t nil)
 	   for bound-expr = (subst a sym1 (subst b sym2 expr))

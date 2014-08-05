@@ -4,7 +4,7 @@
 ;;;; (A B D E G H K)
 (in-package :99)
 
-(defun p16-drop (lst n)
+(defun drop (lst n)
   (loop
      for e in lst
      for i = (1- n) then (1- i)

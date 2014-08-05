@@ -8,17 +8,17 @@
 ;;;; (3 3 5 7)
 (in-package :99)
 
-(defun p35-prime-factors (n)
+(defun prime-factors (n)
   (labels ((recur (m k)
 	     (cond ((= m 1) '())
-		   ((and (p31-is-prime k) (= (rem m k) 0))
+		   ((and (is-prime k) (= (rem m k) 0))
 		    (cons k (recur (/ m k) k)))
 		   (t (recur m (1+ k))))))
     (recur n 2)))
 
-(define-test p35-prime-factors-known-inputs
-  (assert-equal '(3 3 5 7) (p35-prime-factors 315)))
+(define-test prime-factors-known-inputs
+  (assert-equal '(3 3 5 7) (prime-factors 315)))
 
-(define-test p35-prime-factors-test
+(define-test prime-factors-test
   (loop for i from 2 upto 1000
-     do (assert-equal i (apply #'* (p35-prime-factors i)))))
+     do (assert-equal i (apply #'* (prime-factors i)))))

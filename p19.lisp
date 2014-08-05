@@ -10,9 +10,9 @@
 ;;;; the result of problem P17.
 (in-package :99)
 
-(defun p19-rotate (lst n)
+(defun rotate (lst n)
   (let ((split-point (mod n (length lst))))
     (if (zerop split-point)
 	(copy-list lst)
-	(destructuring-bind (head tail) (p17-split lst split-point)
+	(destructuring-bind (head tail) (split lst split-point)
 	  (append tail head)))))

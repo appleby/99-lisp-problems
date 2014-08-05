@@ -4,7 +4,7 @@
 ;;;; (D)
 (in-package :99)
 
-(defun p01-last (lst)
+(defun my-last (lst)
   (if (cdr lst)
-      (p01-last (cdr lst))
+      (my-last (cdr lst))
       lst))

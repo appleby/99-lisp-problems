@@ -5,5 +5,5 @@
 ;;;; 9
 (in-package :99)
 
-(defun p32-gcd (n m)
+(defun my-gcd (n m)
   (gcd n m))

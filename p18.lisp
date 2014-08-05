@@ -9,7 +9,7 @@
 ;;;; (C D E F G)
 (in-package :99)
 
-(defun p18-slice (lst start end)
+(defun slice (lst start end)
   (when (or (> start end) (not (plusp end)))
     (error "Invalid range (~d, ~d)" start end))
   (loop for elem in lst

@@ -31,19 +31,19 @@
 (defun remove-all (items lst)
   (remove-if (lambda (item) (member item items)) lst))
 
-(defun p27-group (names group-sizes)
+(defun group (names group-sizes)
   (if (or (null names) (null group-sizes))
       '(())
-      (loop for combo in (p26-combination (first group-sizes) names)
-	 append (loop for partial in (p27-group (remove-all combo names)
+      (loop for combo in (combination (first group-sizes) names)
+	 append (loop for partial in (group (remove-all combo names)
 						(rest group-sizes))
 		   collect (cons combo partial)))))
 
-(define-test p27-group-known-solutions
+(define-test group-known-solutions
   (let ((names '(aldo beat carla david evi flip gary hugo ida))
 	(known-solutions '(((2 3 4) 1260 (ALDO BEAT) (CARLA DAVID EVI) (FLIP GARY HUGO IDA))    ; (2, 3, 4)! = 1260
 			   ((2 2 5) 756  (ALDO BEAT) (CARLA DAVID) (EVI FLIP GARY HUGO IDA))))) ; (2, 2, 5)! = 756
     (loop for (sizes num-solutions . known-solution) in known-solutions
-       do (let ((solutions (p27-group names sizes)))
+       do (let ((solutions (group names sizes)))
 	    (assert-equal num-solutions (length solutions))
 	    (assert-true (member known-solution solutions :test #'equal))))))

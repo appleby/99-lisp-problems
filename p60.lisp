@@ -25,39 +25,39 @@
 ;;;; Find out how many height-balanced trees exist for N = 15.
 (in-package :99)
 
-(defun p60-min-nodes (height)
+(defun min-nodes (height)
   (cond ((<= height 0) 0)
 	((= height 1) 1)
 	;; We could also define this recursively, viz.
-	;; (+ (p60-min-nodes (1- height)) 2)
+	;; (+ (min-nodes (1- height)) 2)
 	;; But you'd need an extra cond clause above:
 	;; ((= height 2) 2)
 	(t (- (* height 2) 2))))
 
-(defun p60-max-height (n)
+(defun max-height (n)
   (cond ((<= n 0) 0)
 	(t (values (truncate (/ (+ n 2) 2))))))
 
-(defun p60-balanced-partitions (n)
+(defun balanced-partitions (n)
   (flet ((balanced (low high)
-	   (<= (- (p60-max-height high) (p60-max-height low)) 1)))
+	   (<= (- (max-height high) (max-height low)) 1)))
     (loop
        for low from (truncate n 2) downto 0
        for high from (if (evenp n) low (1+ low)) upto n
        while (balanced low high)
        collect (list low high))))
 
-(defun p60-hbal-tree-nodes (n)
+(defun hbal-tree-nodes (n)
   (if (<= n 0)
       (list (make-empty-tree))
-      (loop for (low high) in (p60-balanced-partitions (1- n))
+      (loop for (low high) in (balanced-partitions (1- n))
 	 append (extend-trees
-		 (generate-subtrees #'p60-hbal-tree-nodes low high)))))
+		 (generate-subtrees #'hbal-tree-nodes low high)))))
 
-(defun p60-hbal-tree-nodes-print (n)
-  (loop for tree in (p60-hbal-tree-nodes n) do (print tree)))
+(defun hbal-tree-nodes-print (n)
+  (loop for tree in (hbal-tree-nodes n) do (print tree)))
 
-(define-test p60-hbal-tree-nodes-test
+(define-test hbal-tree-nodes-test
   (let ((inputs '((0 (nil))
 		  (1 ((x nil nil)))
 		  (2 ((X NIL (X NIL NIL)) 
@@ -79,4 +79,4 @@
 		      (X (X (X NIL NIL) (X NIL NIL)) (X (X NIL NIL) NIL)))))))
     (loop for (n expected) in inputs
        do (assert-true (every (lambda (x) (member x expected :test #'tree-equal))
-			      (p60-hbal-tree-nodes n))))))
+			      (hbal-tree-nodes n))))))

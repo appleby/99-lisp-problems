@@ -25,11 +25,11 @@
 ;;;; 1928 = 61 + 1867
 (in-package :99)
 
-(defun p41-goldbach-list (start end &optional (print-limit 0))
+(defun goldbach-list (start end &optional (print-limit 0))
   (let* ((goldbach-start (cond ((<= start 4) 4)
 			       ((evenp start) start)
 			       (t (1+ start))))
 	 (evens (loop for i from goldbach-start upto end by 2 collect i)))
     (loop for e in evens
-	 for primes = (p40-goldbach e)
+	 for primes = (goldbach e)
 	 if (< print-limit (first primes)) do (format t "~d = ~{~d~^ + ~}~%" e primes))))

@@ -17,9 +17,9 @@
 ;;;; discuss later).
 (in-package :99)
 
-(defun p34-totient-phi (m)
+(defun totient-phi (m)
   (when (< m 1)
     (error "~a is not positive" m))
   (if (= m 1)
       1
-      (loop for i from 1 below m count (p33-coprime m i))))
+      (loop for i from 1 below m count (coprime m i))))

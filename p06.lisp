@@ -4,7 +4,7 @@
 ;;; Tried to be clever and only iterate over half the list, but the
 ;;; calls to reverse and length end up making this version O(2.5n),
 ;;; whereas the the equal/reverse version below is O(2n).
-(defun p06-palindrome-iter-p (lst)
+(defun palindrome-iter-p (lst)
   (loop
      for x in lst
      for y in (reverse lst)
@@ -12,5 +12,5 @@
      when (not (equalp x y)) return nil
      finally (return t)))
 
-(defun p06-palindrome-p (lst)
+(defun palindrome-p (lst)
   (equal lst (reverse lst)))

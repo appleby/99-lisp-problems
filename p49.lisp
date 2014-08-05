@@ -20,17 +20,17 @@
   (lambda (x)
     (concatenate 'string s x)))
 
-(defun p49-gray (n)
+(defun gray (n)
   (if (= n 1)
       (list "0" "1")
-      (let* ((gray (p49-gray (1- n)))
+      (let* ((gray (gray (1- n)))
 	     (yarg (reverse gray)))
 	(append (mapcar (prepender "0") gray)
 		(mapcar (prepender "1") yarg)))))
 
-(define-test p49-gray-know-values
+(define-test gray-know-values
   (let ((inputs '((1 . ("0" "1"))
 		  (2 . ("00" "01" "11" "10"))
 		  (3 . ("000" "001" "011" "010" "110" "111" "101" "100")))))
     (loop for (n . expected-codes) in inputs
-       do (assert-equal expected-codes (p49-gray n)))))
+       do (assert-equal expected-codes (gray n)))))
