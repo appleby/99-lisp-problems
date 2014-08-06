@@ -65,13 +65,10 @@
 		 "F T F T"
 		 "F F T T"
 		 "F F F T"))
-	 ;; Every row has a space and newline at the end.
-	 (expected (format nil "~{~A ~%~}" rows)))
-
-    ;; For some reason, assert-prints fails for this test.  Capture
-    ;; output in a stream and use assert-equal to compare the strings.
-    (with-output-to-string (out)
-      (let ((*standard-output* out))
-	(table-infix-nvars '(A B C)
-			   '((A and (B or C)) equ ((A and B) or (A and C)))))
-      (assert-equal expected (get-output-stream-string out)))))
+	 ;; Every row has a space and newline at the end, but
+	 ;; assert-prints trims leading and trailing whitespace.
+	 (expected (format nil "~{~A~^ ~%~}" rows)))
+    (assert-prints
+     expected
+     (table-infix-nvars '(A B C)
+			'((A and (B or C)) equ ((A and B) or (A and C)))))))
