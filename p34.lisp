@@ -18,8 +18,16 @@
 (in-package :99)
 
 (defun totient-phi (m)
-  (when (< m 1)
+  (when (not (plusp m))
     (error "~a is not positive" m))
   (if (= m 1)
       1
       (loop for i from 1 below m count (coprime m i))))
+
+(define-test totient-phi-test
+  (assert-eq 1 (totient-phi 1))
+  (assert-eq 4 (totient-phi 10))
+  (assert-eq 40 (totient-phi 100))
+  (let ((rnd-prime (car (rnd-select (prime-range 2 100) 1))))
+    (assert-eq (1- rnd-prime) (totient-phi rnd-prime) rnd-prime))
+  (assert-error 'simple-error (totient-phi 0)))

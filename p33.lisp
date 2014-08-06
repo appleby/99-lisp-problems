@@ -7,3 +7,9 @@
 
 (defun coprime (m n)
   (= (gcd m n) 1))
+
+(define-test coprime-test
+  (assert-false (coprime 2 4))
+  (assert-false (coprime 3 9))
+  (assert-true (coprime 2 3))
+  (assert-true (coprime 35 64)))

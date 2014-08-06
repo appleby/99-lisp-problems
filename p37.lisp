@@ -16,10 +16,12 @@
 
 ;;; Note that there is an error in the equation given for phi,
 ;;; above. The series should be a product, not a sum.
-(defun totient-phi (n)
+(defun totient-phi-improved (n)
+  (when (not (plusp n))
+    (error "~a is not positive." n))
   (apply #'* (loop for (p m) in (prime-factors-mult n)
 		collect (* (1- p) (expt p (1- m))))))
 
-(define-test totient-phi-test
-  (loop for i from 2 upto 1000
-     do (assert-eql (totient-phi i) (totient-phi i))))
+(define-test totient-phi-improved-test
+  (loop for i from 1 upto 1000
+     do (assert-eq (totient-phi i) (totient-phi-improved i))))

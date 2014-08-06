@@ -8,4 +8,4 @@
 
 (defun compare-totients (n)
   (time (loop repeat n do (totient-phi 10090)))
-  (time (loop repeat n do (totient-phi 10090))))
+  (time (loop repeat n do (totient-phi-improved 10090))))

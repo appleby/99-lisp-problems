@@ -33,3 +33,20 @@
     (loop for e in evens
 	 for primes = (goldbach e)
 	 if (< print-limit (first primes)) do (format t "~d = ~{~d~^ + ~}~%" e primes))))
+
+(define-test goldbach-list-test
+  (assert-prints
+   "10 = 3 + 7
+12 = 5 + 7
+14 = 3 + 11
+16 = 3 + 13
+18 = 5 + 13
+20 = 3 + 17"
+   (goldbach-list 9 20))
+
+  (assert-prints
+   "992 = 73 + 919
+1382 = 61 + 1321
+1856 = 67 + 1789
+1928 = 61 + 1867"
+   (goldbach-list 1 2000 50)))

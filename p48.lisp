@@ -33,7 +33,7 @@
     (if pair
 	(cdr pair)
 	(error "Unbound variable ~a" var))))
-	
+
 (defun generate-all-possible-bindings (vars &optional (values '(t nil)))
   (loop for value-tuple in (n-tuples (length vars) values)
        collect (make-env vars value-tuple)))
@@ -49,9 +49,29 @@
 	       (error "Invalid boolean operation '~a' in expression: ~a" op expr))))
 	(t (error "Invalid expression: ~a" expr))))
 
-(defun table (vars expr)
+(defun table-infix-nvars (vars expr)
   (flet ((print-column (value) (format t "~:[F~;T~] " value)))
     (loop for env in (generate-all-possible-bindings vars)
        do (loop for v in vars do (print-column (get-env v env)))
        do (print-column (eval-bool expr env))
        do (terpri))))
+
+(define-test table-infix-nvars-test
+  (let* ((rows '("T T T T"
+		 "T T F T"
+		 "T F T T"
+		 "T F F T"
+		 "F T T T"
+		 "F T F T"
+		 "F F T T"
+		 "F F F T"))
+	 ;; Every row has a space and newline at the end.
+	 (expected (format nil "~{~A ~%~}" rows)))
+
+    ;; For some reason, assert-prints fails for this test.  Capture
+    ;; output in a stream and use assert-equal to compare the strings.
+    (with-output-to-string (out)
+      (let ((*standard-output* out))
+	(table-infix-nvars '(A B C)
+			   '((A and (B or C)) equ ((A and B) or (A and C)))))
+      (assert-equal expected (get-output-stream-string out)))))

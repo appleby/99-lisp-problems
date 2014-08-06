@@ -15,8 +15,8 @@
 ;;;; * (table 'A 'B '(and A (or A B))).
 ;;;; true true true
 ;;;; true nil true
-;;;; nil true nil 
-;;;; nil nil nil 
+;;;; nil true nil
+;;;; nil nil nil
 (in-package :99)
 
 (defmacro nand (&rest x)
@@ -39,3 +39,11 @@
      do (loop for b in '(t nil)
 	   for bound-expr = (subst a sym1 (subst b sym2 expr))
 	   do (format t "~:[F~;T~] ~:[F~;T~] ~:[F~;T~]~%" a b (eval bound-expr)))))
+
+(define-test table-test
+  (assert-prints
+   "T T T
+T F T
+F T F
+F F F"
+   (table 'A 'B '(and A (or A B)))))
