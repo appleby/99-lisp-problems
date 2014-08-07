@@ -16,3 +16,12 @@
 	      (symbolp (car list))
 	      (loop for child in (cdr list) always (is-mw-tree child))))
 	(t nil)))
+
+(define-test is-mw-tree-test
+  (assert-true (is-mw-tree 'a))
+  (assert-true (is-mw-tree '(a b)))
+  (assert-true (is-mw-tree '(a (f g) c (b d e))))
+  (assert-false (is-mw-tree '()))
+  (assert-false (is-mw-tree '((a b) c)))
+  (assert-false (is-mw-tree '(a)))
+  (assert-false (is-mw-tree '(a (b) c))))

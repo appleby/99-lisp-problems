@@ -14,6 +14,14 @@
 
 (defun atlevel (tree level)
   (cond ((tree-empty-p tree) *the-empty-tree*)
-	((= level 1) (list tree))
+	((= level 1) (list (tree-elem tree)))
 	(t (append (atlevel (tree-left tree) (1- level))
 		   (atlevel (tree-right tree) (1- level))))))
+
+(define-test atlevel-test
+  (assert-equal '() (atlevel *the-empty-tree* 1))
+  (assert-equal '(a) (atlevel *t1* 1))
+  (assert-equal '(b c) (atlevel *t1* 2))
+  (assert-equal '(d e f) (atlevel *t1* 3))
+  (assert-equal '(g) (atlevel *t1* 4))
+  (assert-equal '() (atlevel *t1* 5)))

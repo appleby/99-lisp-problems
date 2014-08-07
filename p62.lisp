@@ -10,5 +10,10 @@
 (defun internals (tree)
   (cond ((tree-empty-p tree) *the-empty-tree*)
 	((leaf-node-p tree) *the-empty-tree*)
-	(t (cons tree (append (internals (tree-left tree))
-			      (internals (tree-right tree)))))))
+	(t (cons (tree-elem tree) (append (internals (tree-left tree))
+					  (internals (tree-right tree)))))))
+
+(define-test internals-test
+  (assert-equal '() (internals *the-empty-tree*))
+  (assert-equal '() (internals *t2*))
+  (assert-equal '(a b c f) (internals *t1*)))

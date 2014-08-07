@@ -13,3 +13,11 @@
     ((null) 0)
     ((symbol) 1)
     ((cons) (reduce #'+ (mapcar #'nnodes tree)))))
+
+(define-test nnodes-test
+  (assert-eq 0 (nnodes '()))
+  (assert-eq 1 (nnodes 'a))
+  (assert-eq 2 (nnodes '(a b)))
+  (assert-eq 3 (nnodes '(a b c)))
+  (assert-eq 3 (nnodes '(a (b c))))
+  (assert-eq 4 (nnodes '(a (b c) d))))
