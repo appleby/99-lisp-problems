@@ -9,11 +9,16 @@
 ;;; (is-connected graph). Both are five-minutes tasks!
 (in-package :99)
 
-(defvar *p83-graph* '((a b c d e f g h) ((a b) (a d) (b c) (b e) (c e) (d e)
-					 (d f) (d g) (e h) (f g) (g h))))
+(defvar *p83-graph* (mk-graph '(a b c d e f g h)
+			      '((a b) (a d) (b c) (b e) (c e) (d e)
+				(d f) (d g) (e h) (f g) (g h))))
 
 (defun s-tree (graph)
-  graph)
+  (let ((digraph (convert-to 'directed graph))
+	(pst '())
+	(f '()))
+    (labels ((grow))
+      (if ))))
 
 (defun is-connected (graph)
   nil)

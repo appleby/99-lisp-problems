@@ -32,6 +32,29 @@
 (defgraph-ctor mk-labeled-graph labeled-undirected-graph)
 (defgraph-ctor mk-labeled-digraph labeled-directed-graph)
 
+(defgeneric vertices (graph)
+  (:documentation "Get a list of the vertices of GRAPH."))
+
+(defmethod vertices ((graph graph))
+  (if (graph-expression-form-p graph)
+      (car (graph-data graph))
+      (mapcar #'car (graph-data graph))))
+
+(defgeneric edges (graph)
+  (:documentation "Get a list of the edges of GRAPH."))
+
+(defmethod edges ((graph graph))
+  (if (graph-expression-form-p graph)
+      (cadr (graph-data graph))
+      (error "Not implemented.")))
+
+(defun graph-expression-form-p (graph)
+  (and (= 2 (length (graph-data graph)))
+       (every #'symbolp (car (graph-data graph)))))
+
+(defun adjacency-list-form-p (graph)
+  (not (graph-expression-form-p graph)))
+
 (defun drop-labels (edges)
   (loop for (n1 n2 nil) in edges collect (list n1 n2)))
 
@@ -169,7 +192,32 @@
 	 for (class graph-expression-form adjacency-list) in inputs
 	 for gef = (make-instance class :data graph-expression-form)
 	 for adj = (make-instance class :data adjacency-list)
+	 do (assert-true (graph-expression-form-p gef))
+	 do (assert-true (adjacency-list-form-p adj))
+	 do (assert-false (graph-expression-form-p adj))
+	 do (assert-false (adjacency-list-form-p gef))
 	 do (assert-graph-equal adj (convert-to 'adjacency gef)))))
+
+(define-test graph-vertices-and-edges-test
+    (let ((inputs '((undirected-graph
+		     ((b c d f g h k) ((b c) (b f) (c f) (f k) (g h)))
+		     ((b (c f)) (c (b f)) (d ()) (f (b c k)) (g (h)) (h (g)) (k (f))))
+		    (directed-graph
+		     ((r s t u v) ((s r) (s u) (u r) (u s) (v u)))
+		     ((r ()) (s (r u)) (t ()) (u (r s)) (v (u))))
+		    (labeled-undirected-graph
+		     ((b c d f g h k) ((b c 1) (b f 2) (c f 3) (f k 4) (g h 5)))
+		     ((b ((c 1) (f 2))) (c ((b 1) (f 3))) (d ()) (f ((b 2) (c 3) (k 4))) (g ((h 5))) (h ((g 5))) (k ((f 4)))))
+		    (labeled-directed-graph
+		     ((k m p q) ((m q 7) (p m 5) (p q 9)))
+		     ((k ()) (m ((q 7))) (p ((m 5) (q 9))) (q ()))))))
+      (loop
+	 for (class graph-expression-form adjacency-list) in inputs
+	 for gef = (make-instance class :data graph-expression-form)
+	 for adj = (make-instance class :data adjacency-list)
+	 do (assert-equal (car graph-expression-form) (vertices gef))
+	 do (assert-equal (cadr graph-expression-form) (edges gef))
+	 do (assert-equality #'set-equal (car graph-expression-form) (vertices adj)))))
 
 (define-test undirected-to-*-test
     (let ((graph (mk-graph '(b c d f g h k) '((b c) (b f) (c f) (f k) (g h))))
