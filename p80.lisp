@@ -48,6 +48,35 @@
       (cadr (graph-data graph))
       (error "Not implemented.")))
 
+(defgeneric add-edge (edge graph)
+  (:documentation "Add EDGE to GRAPH."))
+
+(defmethod add-edge (edge (graph undirected-graph))
+  (mk-graph (union edge (vertices graph))
+	    (union (list edge) (edges graph) :test #'set-equal)))
+
+(defmethod add-edge (edge (graph directed-graph))
+  (mk-digraph (union edge (vertices graph))
+	      (union (list edge) (edges graph) :test #'equal)))
+
+(defgeneric remove-edge (edge graph)
+  (:documentation "Remove EDGE from GRAPH."))
+
+(defun remove-edge-common (edge graph &key (test #'equal))
+  (loop with vertices = '()
+     for e in (edges graph)
+     unless (funcall test e edge)
+       collect e into edges and
+       do (setf vertices (union e vertices))
+     finally (return (make-instance (class-of graph)
+				    :data (list vertices edges)))))
+
+(defmethod remove-edge (edge (graph undirected-graph))
+  (remove-edge-common edge graph :test #'set-equal))
+
+(defmethod remove-edge (edge (graph directed-graph))
+  (remove-edge-common edge graph))
+
 (defun graph-expression-form-p (graph)
   (and (= 2 (length (graph-data graph)))
        (every #'symbolp (car (graph-data graph)))))
