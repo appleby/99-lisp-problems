@@ -40,24 +40,46 @@
       (car (graph-data graph))
       (mapcar #'car (graph-data graph))))
 
+(defgeneric adjacency-edges (graph)
+  (:documentation "Get a list of edges from a GRAPH in adjacency-list form."))
+
+(defmethod adjacency-edges ((graph undirected-graph))
+  (loop with edges = '()
+     for (v vs) in (graph-data graph)
+     do (loop for u in vs
+	   for ctor = (if (atom u) #'list #'cons)
+	   do (setf edges (adjoin (funcall ctor v u) edges :test #'set-equal)))
+     finally (return edges)))
+
+(defmethod adjacency-edges ((graph directed-graph))
+  (loop for (v vs) in (graph-data graph)
+     append (loop for u in vs
+	       for ctor = (if (atom u) #'list #'cons)
+	       collect (funcall ctor v u))))
+
 (defgeneric edges (graph)
   (:documentation "Get a list of the edges of GRAPH."))
 
 (defmethod edges ((graph graph))
   (if (graph-expression-form-p graph)
       (cadr (graph-data graph))
-      (error "Not implemented.")))
+      (adjacency-edges graph)))
+
+(defun take (n lst)
+  (loop repeat n for x in lst collect x))
 
 (defgeneric add-edge (edge graph)
   (:documentation "Add EDGE to GRAPH."))
 
 (defmethod add-edge (edge (graph undirected-graph))
-  (mk-graph (union edge (vertices graph))
-	    (union (list edge) (edges graph) :test #'set-equal)))
+  (make-instance (class-of graph)
+		 :data (list (union (take 2 edge) (vertices graph))
+			     (adjoin edge (edges graph) :test #'set-equal))))
 
 (defmethod add-edge (edge (graph directed-graph))
-  (mk-digraph (union edge (vertices graph))
-	      (union (list edge) (edges graph) :test #'equal)))
+  (make-instance (class-of graph)
+		 :data (list (union (take 2 edge) (vertices graph))
+			     (adjoin edge (edges graph) :test #'equal))))
 
 (defgeneric remove-edge (edge graph)
   (:documentation "Remove EDGE from GRAPH."))
@@ -67,7 +89,7 @@
      for e in (edges graph)
      unless (funcall test e edge)
        collect e into edges and
-       do (setf vertices (union e vertices))
+       do (setf vertices (union (take 2 e) vertices))
      finally (return (make-instance (class-of graph)
 				    :data (list vertices edges)))))
 
@@ -183,11 +205,30 @@
 				 collect (list n1 n2 label)
 				 collect (list n2 n1 label)))))
 
-(defun graph-equal (a b)
-  (tree-equal (graph-data a) (graph-data b)))
+(defgeneric vertices-equal (a b)
+  (:documentation "Return T if A and B contain the same vertices."))
+
+(defmethod vertices-equal ((a graph) (b graph))
+  (set-equal (vertices a) (vertices b)))
+
+(defgeneric edges-equal (a b)
+  (:documentation "Return T if A and B have the same edges."))
+
+(defmethod edges-equal ((a undirected-graph) (b undirected-graph))
+  (set-equal (edges a) (edges b) :test #'set-equal))
+
+(defmethod edges-equal ((a directed-graph) (b directed-graph))
+  (set-equal (edges a) (edges b) :test #'equal))
+
+(defgeneric graph-equal (a b)
+  (:documentation "Return T if A and B have the same vertices and edges."))
+
+(defmethod graph-equal ((a graph) (b graph))
+  (and (vertices-equal a b)
+       (edges-equal a b)))
 
 (defmacro assert-graph-equal (graph-a graph-b &rest extras)
-  `(assert-equality #'graph-equal ,graph-a ,graph-b ,extras))
+  `(assert-equality #'graph-equal ,graph-a ,graph-b ,@extras))
 
 ;;; I believe there are errors in the representations of certain
 ;;; graphs given in the examples for this question (errors that also
@@ -204,7 +245,7 @@
 ;;;     ( (k m p q) ( (m p 7) ...
 ;;; which should instead be
 ;;;     ( (k m p q) ( (m q 7) ...
-(define-test graph-adjacency-test
+(define-test graph-methods-test
     (let ((inputs '((undirected-graph
 		     ((b c d f g h k) ((b c) (b f) (c f) (f k) (g h)))
 		     ((b (c f)) (c (b f)) (d ()) (f (b c k)) (g (h)) (h (g)) (k (f))))
@@ -225,28 +266,35 @@
 	 do (assert-true (adjacency-list-form-p adj))
 	 do (assert-false (graph-expression-form-p adj))
 	 do (assert-false (adjacency-list-form-p gef))
+	 do (assert-graph-equal gef gef)
+	 do (assert-graph-equal adj adj)
 	 do (assert-graph-equal adj (convert-to 'adjacency gef)))))
 
-(define-test graph-vertices-and-edges-test
-    (let ((inputs '((undirected-graph
-		     ((b c d f g h k) ((b c) (b f) (c f) (f k) (g h)))
-		     ((b (c f)) (c (b f)) (d ()) (f (b c k)) (g (h)) (h (g)) (k (f))))
-		    (directed-graph
-		     ((r s t u v) ((s r) (s u) (u r) (u s) (v u)))
-		     ((r ()) (s (r u)) (t ()) (u (r s)) (v (u))))
-		    (labeled-undirected-graph
-		     ((b c d f g h k) ((b c 1) (b f 2) (c f 3) (f k 4) (g h 5)))
-		     ((b ((c 1) (f 2))) (c ((b 1) (f 3))) (d ()) (f ((b 2) (c 3) (k 4))) (g ((h 5))) (h ((g 5))) (k ((f 4)))))
-		    (labeled-directed-graph
-		     ((k m p q) ((m q 7) (p m 5) (p q 9)))
-		     ((k ()) (m ((q 7))) (p ((m 5) (q 9))) (q ()))))))
-      (loop
-	 for (class graph-expression-form adjacency-list) in inputs
-	 for gef = (make-instance class :data graph-expression-form)
-	 for adj = (make-instance class :data adjacency-list)
-	 do (assert-equal (car graph-expression-form) (vertices gef))
-	 do (assert-equal (cadr graph-expression-form) (edges gef))
-	 do (assert-equality #'set-equal (car graph-expression-form) (vertices adj)))))
+(define-test add-remove-edge-test
+  (let ((empty-graph (mk-graph '() '()))
+	(empty-digraph (mk-digraph '() '()))
+	(empty-labeled-graph (mk-labeled-graph '() '()))
+	(empty-labeled-digraph (mk-labeled-digraph '() '())))
+    (assert-graph-equal (mk-graph '(a b) '((a b)))
+			(add-edge '(a b) empty-graph))
+    (assert-graph-equal (mk-digraph '(a b) '((b a)))
+    			(add-edge '(b a) empty-digraph))
+    (assert-graph-equal (mk-labeled-graph '(a b) '((b a 2)))
+    			(add-edge '(a b 2) empty-labeled-graph) )
+    (assert-graph-equal (mk-labeled-digraph '(a b) '((a b 2)))
+    			(add-edge '(a b 2) empty-labeled-digraph))
+    (assert-graph-equal empty-graph
+    			(remove-edge '(b a) (add-edge '(a b) empty-graph)))
+    (assert-graph-equal empty-digraph
+    			(remove-edge '(b a) (add-edge '(b a) empty-digraph)))
+    (assert-graph-equal (mk-digraph '(a b) '((b a)))
+    			(remove-edge '(a b) (add-edge '(b a) empty-digraph)))
+    (assert-graph-equal empty-labeled-graph
+    			(remove-edge '(b a 2) (add-edge '(a b 2) empty-labeled-graph)) )
+    (assert-graph-equal empty-labeled-digraph
+    			(remove-edge '(a b 2) (add-edge '(a b 2) empty-labeled-digraph)))
+    (assert-graph-equal (mk-labeled-digraph '(a b) '((a b 2)))
+			(remove-edge '(b a 2) (add-edge '(a b 2) empty-labeled-digraph)))))
 
 (define-test undirected-to-*-test
     (let ((graph (mk-graph '(b c d f g h k) '((b c) (b f) (c f) (f k) (g h))))
