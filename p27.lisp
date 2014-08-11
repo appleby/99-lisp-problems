@@ -28,8 +28,8 @@
 ;;;; coefficients".
 (in-package :99)
 
-(defun remove-all (items lst)
-  (remove-if (lambda (item) (member item items)) lst))
+(defun remove-all (items lst &key (test #'eql))
+  (remove-if (lambda (item) (member item items :test test)) lst))
 
 (defun group (names group-sizes)
   (if (or (null names) (null group-sizes))
