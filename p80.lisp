@@ -205,6 +205,9 @@
 				 collect (list n1 n2 label)
 				 collect (list n2 n1 label)))))
 
+(defun contains-vertex (v graph)
+  (member v (vertices graph)))
+
 (defgeneric vertices-equal (a b)
   (:documentation "Return T if A and B contain the same vertices."))
 
