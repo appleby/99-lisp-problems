@@ -117,6 +117,7 @@ This is procedure S from:
 (define-test s-tree-test
   (flet ((graph-set-equal (x y)
 	   (set-equal x y :test #'graph-equal)))
+    (assert-eq 112 (length (s-tree *p83-graph*)))
     (assert-equality #'graph-set-equal
 		     `(,(mk-graph '(a) '()))
 		     (s-tree (mk-graph '(a) '())))
