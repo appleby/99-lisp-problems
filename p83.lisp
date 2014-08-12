@@ -69,28 +69,28 @@ This is procedure S from:
 		   (progn
 		     (setf L pst)
 		     (push (convert-to 'undirected pst) solutions))
-		   (if (not (null f))
-		       (loop
-			  with f-bar = nil
-			  with pushed-edges = nil
-			  with popped-edges = nil
-			  for e = (pop f)
-			  for v = (cadr e)
-			  do
-			    (progn
-			      (setf pst (add-edge e pst))
-			      (multiple-value-setq (pushed-edges popped-edges)
-				(update-f v))
-			      (grow)
-			      (restore-f pushed-edges popped-edges)
-			      (setf pst (remove-edge e pst))
-			      (setf digraph (remove-edge e digraph))
-			      (push e f-bar))
-			  until (branch-exists-p v)
-			  finally
-			    (loop for e in f-bar
-			       do (push e f)
-			       do (setf digraph (add-edge e digraph))))))))
+		   (loop
+		      with f-bar = nil
+		      with pushed-edges = nil
+		      with popped-edges = nil
+		      while (not (null f))
+		      for e = (pop f)
+		      for v = (cadr e)
+		      do
+			(progn
+			  (setf pst (add-edge e pst))
+			  (multiple-value-setq (pushed-edges popped-edges)
+			    (update-f v))
+			  (grow)
+			  (restore-f pushed-edges popped-edges)
+			  (setf pst (remove-edge e pst))
+			  (setf digraph (remove-edge e digraph))
+			  (push e f-bar))
+		      until (branch-exists-p v)
+		      finally
+			(loop for e in f-bar
+			   do (push e f)
+			   do (setf digraph (add-edge e digraph)))))))
       (grow))
     solutions))
 
