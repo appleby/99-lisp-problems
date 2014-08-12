@@ -31,7 +31,8 @@ This is procedure S from:
 	 ;; directed graph at the start.
 	 (digraph (convert-to 'directed graph))
 
-	 ;; The partial spanning tree constructed so far.
+	 ;; The partial spanning tree constructed so far. Initialize
+	 ;; it with any vertex from the graph.
 	 (pst (mk-digraph (take 1 (vertices digraph)) '()))
 
 	 ;; A list of all the edges from a vertex in pst to a vertex
@@ -40,9 +41,12 @@ This is procedure S from:
 	      (remove-if-not (lambda (e) (eq v (car e)))
 			     (edges digraph))))
 
-	 ;; The last spanning tree we found.
+	 ;; The last spanning tree we found. Used for bridge
+	 ;; detection.
 	 (L nil))
     (labels ((update-f (v)
+	       "Push all edges (v, w) | w not in pst.
+                Remove all edges (u, v) | u in pst."
 	       (let ((pushed-edges
 		      (loop for e in (edges digraph)
 			 if (and (eq v (car e)) (not (contains-vertex (cadr e) pst)))
@@ -57,10 +61,12 @@ This is procedure S from:
 		 (values pushed-edges popped-edges)))
 
 	     (restore-f (pushed-edges popped-edges)
+	       "Restore the edges pushed/popped by update-f."
 	       (setf f (remove-all pushed-edges f :test #'equal))
 	       (loop for (e . i) in popped-edges do (setf f (insert-at e f i))))
 
-	     (branch-exists-p (v)
+	     (branch-p (v)
+	       "Return t if v is the terminus of a bridge in digraph."
 	       (loop for (w x) in (edges digraph)
 		  never (and (eq x v) (not (path (adjacency L) v w)))))
 
@@ -86,7 +92,7 @@ This is procedure S from:
 			  (setf pst (remove-edge e pst))
 			  (setf digraph (remove-edge e digraph))
 			  (push e f-bar))
-		      until (branch-exists-p v)
+		      until (branch-p v)
 		      finally
 			(loop for e in f-bar
 			   do (push e f)
