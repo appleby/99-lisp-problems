@@ -37,8 +37,8 @@ This is procedure S from:
 
 	 ;; A list of all the edges from a vertex in pst to a vertex
 	 ;; not in pst.
-	 (f (let ((v (car (vertices pst))))
-	      (remove-if-not (lambda (e) (eq v (car e)))
+	 (f (let ((v (first (vertices pst))))
+	      (remove-if-not (lambda (e) (eq v (first e)))
 			     (edges digraph))))
 
 	 ;; The last spanning tree we found. Used for bridge
@@ -47,13 +47,13 @@ This is procedure S from:
     (labels ((update-f (v)
                ;; Remove all edges (u, v) | u in pst.
 	       (setf f (remove-if (lambda (e)
-				    (and (eq v (cadr e))
-					 (contains-vertex (car e) pst)))
+				    (and (eq v (second e))
+					 (contains-vertex (first e) pst)))
 				  f))
 
 	       ;; Push all edges (v, w) | w not in pst.
 	       (loop for e in (edges digraph)
-		  if (and (eq v (car e)) (not (contains-vertex (cadr e) pst)))
+		  if (and (eq v (first e)) (not (contains-vertex (second e) pst)))
 		  do (push e f)))
 
 	     (branch-p (v)
@@ -70,7 +70,7 @@ This is procedure S from:
 		      with f-bar = nil
 		      while (not (null f))
 		      for e = (pop f)
-		      for v = (cadr e)
+		      for v = (second e)
 		      for saved-f = (copy-list f)
 		      do
 			(progn
@@ -95,7 +95,7 @@ This is procedure S from:
 (defun is-tree (graph)
   (let ((spanning-trees (s-tree graph)))
     (and (= 1 (length spanning-trees))
-	 (graph-equal graph (car spanning-trees)))))
+	 (graph-equal graph (first spanning-trees)))))
 
 (define-test is-connected-test
   (assert-true (is-connected *p83-graph*))
