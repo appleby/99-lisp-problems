@@ -33,18 +33,18 @@ This is procedure S from:
 
 	 ;; The partial spanning tree constructed so far. Initialize
 	 ;; it with any vertex from the graph.
-	 (pst (mk-digraph (take 1 (vertices digraph)) '()))
+	 (initial-pst (mk-digraph (take 1 (vertices digraph)) '()))
 
 	 ;; A list of all the edges from a vertex in pst to a vertex
 	 ;; not in pst.
-	 (initial-f (let ((v (first (vertices pst))))
+	 (initial-f (let ((v (first (vertices initial-pst))))
 		      (remove-if-not (lambda (e) (eq v (first e)))
 				     (edges digraph))))
 
 	 ;; The last spanning tree we found. Used for bridge
 	 ;; detection.
 	 (L nil))
-    (labels ((next (f v)
+    (labels ((next (f v pst)
 	       (let ( ;; Remove all edges (u, v) | u in pst.
 		     (pruned-edges (remove-if (lambda (e)
 						(and (eq v (second e))
@@ -61,7 +61,7 @@ This is procedure S from:
 	       (loop for (w x) in (edges digraph)
 		  never (and (eq x v) (not (path (adjacency L) v w)))))
 
-	     (grow (f)
+	     (grow (f pst)
 	       (if (vertices-equal digraph pst)
 		   (progn
 		     (setf L pst)
@@ -72,16 +72,14 @@ This is procedure S from:
 		      for v = (second e)
 		      do
 			(progn
-			  (setf pst (add-edge e pst))
-			  (grow (next es v))
-			  (setf pst (remove-edge e pst))
+			  (grow (next es v pst) (add-edge e pst))
 			  (setf digraph (remove-edge e digraph))
 			  (push e f-bar))
 		      until (branch-p v)
 		      finally
 			(loop for e in f-bar
 			   do (setf digraph (add-edge e digraph)))))))
-      (grow initial-f))
+      (grow initial-f initial-pst))
     solutions))
 
 (defun is-connected (graph)
