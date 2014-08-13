@@ -37,56 +37,51 @@ This is procedure S from:
 
 	 ;; A list of all the edges from a vertex in pst to a vertex
 	 ;; not in pst.
-	 (f (let ((v (first (vertices pst))))
-	      (remove-if-not (lambda (e) (eq v (first e)))
-			     (edges digraph))))
+	 (initial-f (let ((v (first (vertices pst))))
+		      (remove-if-not (lambda (e) (eq v (first e)))
+				     (edges digraph))))
 
 	 ;; The last spanning tree we found. Used for bridge
 	 ;; detection.
 	 (L nil))
-    (labels ((update-f (v)
-               ;; Remove all edges (u, v) | u in pst.
-	       (setf f (remove-if (lambda (e)
-				    (and (eq v (second e))
-					 (contains-vertex (first e) pst)))
-				  f))
-
-	       ;; Push all edges (v, w) | w not in pst.
-	       (loop for e in (edges digraph)
-		  if (and (eq v (first e)) (not (contains-vertex (second e) pst)))
-		  do (push e f)))
+    (labels ((next (f v)
+	       (let ( ;; Remove all edges (u, v) | u in pst.
+		     (pruned-edges (remove-if (lambda (e)
+						(and (eq v (second e))
+						     (contains-vertex (first e) pst)))
+					      f))
+		     ;; Push all edges (v, w) | w not in pst.
+		     (new-edges (loop for e in (edges digraph)
+				   if (and (eq v (first e)) (not (contains-vertex (second e) pst)))
+				   collect e)))
+		 (append new-edges pruned-edges)))
 
 	     (branch-p (v)
 	       "Return t if v is the terminus of a bridge in digraph."
 	       (loop for (w x) in (edges digraph)
 		  never (and (eq x v) (not (path (adjacency L) v w)))))
 
-	     (grow ()
+	     (grow (f)
 	       (if (vertices-equal digraph pst)
 		   (progn
 		     (setf L pst)
 		     (push (convert-to 'undirected pst) solutions))
 		   (loop
 		      with f-bar = nil
-		      while (not (null f))
-		      for e = (pop f)
+		      for (e . es) on f
 		      for v = (second e)
-		      for saved-f = (copy-list f)
 		      do
 			(progn
 			  (setf pst (add-edge e pst))
-			  (update-f v)
-			  (grow)
-			  (setf f saved-f)
+			  (grow (next es v))
 			  (setf pst (remove-edge e pst))
 			  (setf digraph (remove-edge e digraph))
 			  (push e f-bar))
 		      until (branch-p v)
 		      finally
 			(loop for e in f-bar
-			   do (push e f)
 			   do (setf digraph (add-edge e digraph)))))))
-      (grow))
+      (grow initial-f))
     solutions))
 
 (defun is-connected (graph)
