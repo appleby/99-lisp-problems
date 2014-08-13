@@ -44,7 +44,7 @@ This is procedure S from:
 	 ;; The last spanning tree we found. Used for bridge
 	 ;; detection.
 	 (L nil))
-    (labels ((next (f v pst digraph)
+    (labels ((next-f (f v pst digraph)
 	       (let ( ;; Remove all edges (u, v) | u in pst.
 		     (pruned-edges (remove-if (lambda (e)
 						(and (eq v (second e))
@@ -71,7 +71,7 @@ This is procedure S from:
 		      for v = (second e)
 		      do
 			(progn
-			  (grow (next es v pst digraph) (add-edge e pst) digraph)
+			  (grow (next-f es v pst digraph) (add-edge e pst) digraph)
 			  (setf digraph (remove-edge e digraph)))
 		      until (branch-p v digraph)))))
       (grow initial-f initial-pst initial-digraph))
