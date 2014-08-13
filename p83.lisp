@@ -29,22 +29,22 @@ This is procedure S from:
 
 	 ;; The Gabow / Myers algorithm requires converting to a
 	 ;; directed graph at the start.
-	 (digraph (convert-to 'directed graph))
+	 (initial-digraph (convert-to 'directed graph))
 
 	 ;; The partial spanning tree constructed so far. Initialize
 	 ;; it with any vertex from the graph.
-	 (initial-pst (mk-digraph (take 1 (vertices digraph)) '()))
+	 (initial-pst (mk-digraph (take 1 (vertices initial-digraph)) '()))
 
 	 ;; A list of all the edges from a vertex in pst to a vertex
 	 ;; not in pst.
 	 (initial-f (let ((v (first (vertices initial-pst))))
 		      (remove-if-not (lambda (e) (eq v (first e)))
-				     (edges digraph))))
+				     (edges initial-digraph))))
 
 	 ;; The last spanning tree we found. Used for bridge
 	 ;; detection.
 	 (L nil))
-    (labels ((next (f v pst)
+    (labels ((next (f v pst digraph)
 	       (let ( ;; Remove all edges (u, v) | u in pst.
 		     (pruned-edges (remove-if (lambda (e)
 						(and (eq v (second e))
@@ -56,30 +56,25 @@ This is procedure S from:
 				   collect e)))
 		 (append new-edges pruned-edges)))
 
-	     (branch-p (v)
+	     (branch-p (v digraph)
 	       "Return t if v is the terminus of a bridge in digraph."
 	       (loop for (w x) in (edges digraph)
 		  never (and (eq x v) (not (path (adjacency L) v w)))))
 
-	     (grow (f pst)
+	     (grow (f pst digraph)
 	       (if (vertices-equal digraph pst)
 		   (progn
 		     (setf L pst)
 		     (push (convert-to 'undirected pst) solutions))
 		   (loop
-		      with f-bar = nil
 		      for (e . es) on f
 		      for v = (second e)
 		      do
 			(progn
-			  (grow (next es v pst) (add-edge e pst))
-			  (setf digraph (remove-edge e digraph))
-			  (push e f-bar))
-		      until (branch-p v)
-		      finally
-			(loop for e in f-bar
-			   do (setf digraph (add-edge e digraph)))))))
-      (grow initial-f initial-pst))
+			  (grow (next es v pst digraph) (add-edge e pst) digraph)
+			  (setf digraph (remove-edge e digraph)))
+		      until (branch-p v digraph)))))
+      (grow initial-f initial-pst initial-digraph))
     solutions))
 
 (defun is-connected (graph)
