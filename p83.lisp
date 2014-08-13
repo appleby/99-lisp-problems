@@ -45,25 +45,16 @@ This is procedure S from:
 	 ;; detection.
 	 (L nil))
     (labels ((update-f (v)
-	       "Push all edges (v, w) | w not in pst.
-                Remove all edges (u, v) | u in pst."
-	       (let ((pushed-edges
-		      (loop for e in (edges digraph)
-			 if (and (eq v (car e)) (not (contains-vertex (cadr e) pst)))
-			 do (push e f) and collect e))
-		     (popped-edges
-		      (loop
-			 for e in f
-			 for i upfrom 1
-			 if (and (eq v (cadr e)) (contains-vertex (car e) pst))
-			 collect (cons e i))))
-		 (setf f (remove-all (mapcar #'car popped-edges) f :test #'equal))
-		 (values pushed-edges popped-edges)))
+               ;; Remove all edges (u, v) | u in pst.
+	       (setf f (remove-if (lambda (e)
+				    (and (eq v (cadr e))
+					 (contains-vertex (car e) pst)))
+				  f))
 
-	     (restore-f (pushed-edges popped-edges)
-	       "Restore the edges pushed/popped by update-f."
-	       (setf f (remove-all pushed-edges f :test #'equal))
-	       (loop for (e . i) in popped-edges do (setf f (insert-at e f i))))
+	       ;; Push all edges (v, w) | w not in pst.
+	       (loop for e in (edges digraph)
+		  if (and (eq v (car e)) (not (contains-vertex (cadr e) pst)))
+		  do (push e f)))
 
 	     (branch-p (v)
 	       "Return t if v is the terminus of a bridge in digraph."
@@ -77,18 +68,16 @@ This is procedure S from:
 		     (push (convert-to 'undirected pst) solutions))
 		   (loop
 		      with f-bar = nil
-		      with pushed-edges = nil
-		      with popped-edges = nil
 		      while (not (null f))
 		      for e = (pop f)
 		      for v = (cadr e)
+		      for saved-f = (copy-list f)
 		      do
 			(progn
 			  (setf pst (add-edge e pst))
-			  (multiple-value-setq (pushed-edges popped-edges)
-			    (update-f v))
+			  (update-f v)
 			  (grow)
-			  (restore-f pushed-edges popped-edges)
+			  (setf f saved-f)
 			  (setf pst (remove-edge e pst))
 			  (setf digraph (remove-edge e digraph))
 			  (push e f-bar))
