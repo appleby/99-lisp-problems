@@ -45,16 +45,30 @@ This is procedure S from:
 	 ;; detection.
 	 (L nil))
     (labels ((next-f (f v pst digraph)
-	       (let ( ;; Remove all edges (u, v) | u in pst.
-		     (pruned-edges (remove-if (lambda (e)
-						(and (eq v (second e))
-						     (contains-vertex (first e) pst)))
-					      f))
-		     ;; Push all edges (v, w) | w not in pst.
-		     (new-edges (loop for e in (edges digraph)
-				   if (and (eq v (first e)) (not (contains-vertex (second e) pst)))
-				   collect e)))
-		 (append new-edges pruned-edges)))
+	       ;; Generate a new list of edges for the next invocation
+	       ;; of grow. We have just selected the edge e=(u,v). We
+	       ;; now need to:
+	       ;;
+	       ;; 1) Add all edges (v,w) where w is not in pst. In
+	       ;;    other words, add all outbound edges from the new
+	       ;;    vertex v that we just selected, but skip any that
+	       ;;    introduce a cycle in pst.
+	       ;;
+	       ;; 2) Remove all edges (x,v) where x is in pst. That
+	       ;;    is, any existing edges that point to our new
+	       ;;    vertex should be removed, again to prevent
+	       ;;    cycles.
+	       (append
+		;; Add all edges (v,w) where w is not in pst.
+		(remove-if-not (lambda (e)
+				 (and (eq v (first e))
+				      (not (contains-vertex (second e) pst))))
+			       (edges digraph))
+		;; Remove all edges (x,v) where x is in pst.
+		(remove-if (lambda (e)
+			     (and (eq v (second e))
+				  (contains-vertex (first e) pst)))
+			   f)))
 
 	     (branch-p (v digraph)
 	       "Return t if v is the terminus of a bridge in digraph."
