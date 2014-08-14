@@ -26,7 +26,7 @@ This is procedure S from:
   (let ((solutions '())
 	;; The last spanning tree we found. Used for bridge
 	;; detection.
-	(L nil))
+	last-stree)
     (labels ((next-f (f v pst digraph)
 	       ;; Generate a new list of edges for the next invocation
 	       ;; of grow. We have just selected the edge e=(u,v). We
@@ -56,12 +56,12 @@ This is procedure S from:
 	     (branch-p (v digraph)
 	       "Return t if v is the terminus of a bridge in digraph."
 	       (loop for (w x) in (edges digraph)
-		  never (and (eq x v) (not (path (adjacency L) v w)))))
+		  never (and (eq x v) (not (path (adjacency last-stree) v w)))))
 
 	     (grow (f pst digraph)
 	       (if (vertices-equal digraph pst)
 		   (progn
-		     (setf L pst)
+		     (setf last-stree pst)
 		     (push (convert-to 'undirected pst) solutions))
 		   (loop
 		      for (e . es) on f
