@@ -17,33 +17,16 @@
   "Return the set of all spanning trees of GRAPH.
 
 Each spanning tree is represented as an object of type
-'undirected-graph.
+`undirected-graph'.
 
 This is procedure S from:
   Harold N. Gabow, Eugene W. Myers
   Finding All Spanning Trees of Directed and Undirected Graphs.
 "
-  ;; This is a direct translation of the pseudocode from the paper,
-  ;; and makes for pretty hideous procedural lisp.
-  (let* ((solutions '())
-
-	 ;; The Gabow / Myers algorithm requires converting to a
-	 ;; directed graph at the start.
-	 (initial-digraph (convert-to 'directed graph))
-
-	 ;; The partial spanning tree constructed so far. Initialize
-	 ;; it with any vertex from the graph.
-	 (initial-pst (mk-digraph (take 1 (vertices initial-digraph)) '()))
-
-	 ;; A list of all the edges from a vertex in pst to a vertex
-	 ;; not in pst.
-	 (initial-f (let ((v (first (vertices initial-pst))))
-		      (remove-if-not (lambda (e) (eq v (first e)))
-				     (edges initial-digraph))))
-
-	 ;; The last spanning tree we found. Used for bridge
-	 ;; detection.
-	 (L nil))
+  (let ((solutions '())
+	;; The last spanning tree we found. Used for bridge
+	;; detection.
+	(L nil))
     (labels ((next-f (f v pst digraph)
 	       ;; Generate a new list of edges for the next invocation
 	       ;; of grow. We have just selected the edge e=(u,v). We
@@ -88,7 +71,23 @@ This is procedure S from:
 			  (grow (next-f es v pst digraph) (add-edge e pst) digraph)
 			  (setf digraph (remove-edge e digraph)))
 		      until (branch-p v digraph)))))
-      (grow initial-f initial-pst initial-digraph))
+      (let* (;; The Gabow / Myers algorithm requires a directed graph
+	     ;; as input. Spanning trees are converted back to
+	     ;; undirected graphs before being pushed onto SOLUTIONS.
+	     (digraph (convert-to 'directed graph))
+
+	     ;; Choose a vertex from digraph as the root. If GRAPH was
+	     ;; undirected, then the choice of root is arbitrary.
+	     (root (first (vertices digraph)))
+
+	     ;; The partial spanning tree constructed so far.
+	     (pst (mk-digraph (list root) '()))
+
+	     ;; A list of all the edges from a vertex in pst to a vertex
+	     ;; not in pst.
+	     (f (remove-if-not (lambda (e) (eq root (first e)))
+			       (edges digraph))))
+	(grow f pst digraph)))
     solutions))
 
 (defun is-connected (graph)
