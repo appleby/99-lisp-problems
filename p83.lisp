@@ -1,12 +1,12 @@
-;;; (**) Construct all spanning trees
-;;;
-;;; Write a function (s-tree graph) to construct (by backtracking) all
-;;; spanning trees of a given graph. With this function, find out how
-;;; many spanning trees there are for the graph depicted to the
-;;; left. The data of this example graph can be found in the file
-;;; p83.dat. When you have a correct solution for the s-tree function,
-;;; use it to define two other useful functions: (is-tree graph) and
-;;; (is-connected graph). Both are five-minutes tasks!
+;;;; (**) Construct all spanning trees
+;;;;
+;;;; Write a function (s-tree graph) to construct (by backtracking) all
+;;;; spanning trees of a given graph. With this function, find out how
+;;;; many spanning trees there are for the graph depicted to the
+;;;; left. The data of this example graph can be found in the file
+;;;; p83.dat. When you have a correct solution for the s-tree function,
+;;;; use it to define two other useful functions: (is-tree graph) and
+;;;; (is-connected graph). Both are five-minutes tasks!
 (in-package :99)
 
 (defvar *p83-graph* (mk-graph '(a b c d e f g h)
