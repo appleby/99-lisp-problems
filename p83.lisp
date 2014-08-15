@@ -43,14 +43,10 @@ This is procedure S from:
 	       ;;    cycles.
 	       (append
 		;; Add all edges (v,w) where w is not in pst.
-		(remove-if-not (lambda (e)
-				 (and (eq v (first e))
-				      (not (contains-vertex (second e) pst))))
-			       (edges digraph))
+		(remove-if (lambda (e) (contains-vertex (second e) pst))
+			   (adjacent-edges v digraph))
 		;; Remove all edges (x,v) where x is in pst.
-		(remove-if (lambda (e)
-			     (and (eq v (second e))
-				  (contains-vertex (first e) pst)))
+		(remove-if (lambda (e) (eq v (second e)))
 			   f)))
 
 	     (branch-p (v digraph)
@@ -71,7 +67,7 @@ This is procedure S from:
 			  (grow (next-f es v pst digraph) (add-edge e pst) digraph)
 			  (setf digraph (remove-edge e digraph)))
 		      until (branch-p v digraph)))))
-      (let* (;; The Gabow / Myers algorithm requires a directed graph
+      (let* ( ;; The Gabow / Myers algorithm requires a directed graph
 	     ;; as input. Spanning trees are converted back to
 	     ;; undirected graphs before being pushed onto SOLUTIONS.
 	     (digraph (convert-to 'directed graph))
