@@ -28,35 +28,36 @@
   (values 0 graph))
 
 (define-test ms-tree-test
-  (let* (;;; solution-a
-	 ;;;
-         ;;; (a)--5--(b)--2-(c)
-  	 ;;;  |         \
-  	 ;;;  3          4
-  	 ;;;  |            \
-  	 ;;; (d)	    (e)
-  	 ;;;  | \
-  	 ;;;  4  3
-  	 ;;;  |   \
-  	 ;;; (f)   (g)---1--(h)
-         ;;;
-	 (solution-a (mk-labeled-graph '(a b c d e f g h)
-				       '((a d 3) (d g 3) (g h 1) (g f 4) (a b 5)
-					 (b e 4) (b c 2))))
-	 ;;; solution-b
-	 ;;;
-         ;;; (a)--5--(b)--2-(c)
-  	 ;;;  |         \
-  	 ;;;  3          4
-  	 ;;;  |            \
-  	 ;;; (d)	    (e)
-  	 ;;;    \
-  	 ;;;     3
-  	 ;;;      \
-  	 ;;; (f)-4-(g)---1--(h)
-         ;;;
-	 (solution-b (add-edge '(d f 4) (remove-edge '(g f 4) solution-a))))
+  ;;; The four solutions.
+  ;;;
+  ;;; (a)--5--(b)--2-(c)       (a)--5--(b)--2-(c)
+  ;;;  |         \              |         \
+  ;;;  3          4     	3          4
+  ;;;  |            \           |            \
+  ;;; (d)	     (e)       (d)            (e)
+  ;;;  | \	      	          \
+  ;;;  4  3	      	           3
+  ;;;  |   \	      	            \
+  ;;; (f)   (g)---1--(h)       (f)-4-(g)---1--(h)
+  ;;;
+  ;;; (a)     (b)--2-(c)       (a)     (b)--2-(c)
+  ;;;  |         \      	|         \
+  ;;;  3          4     	3          4
+  ;;;  |            \   	|            \
+  ;;; (d)            (e)       (d)            (e)
+  ;;;    \            | 	| \            |
+  ;;;     3           5         4  3           5
+  ;;;      \          | 	|   \          |
+  ;;; (f)-4-(g)---1--(h)       (f)   (g)---1--(h)
+  ;;;
+  (let* ((vertices '(a b c d e f g h))
+	 (common-edges '((a d 3) (d g 3) (g h 1) (b e 4) (b c 2)))
+	 (swappable-edges (cartesian-product '((d f 4) (f g 4))
+					     '((a b 5) (e h 5))))
+	 (solutions (loop for es in swappable-edges
+		       collect (mk-labeled-graph vertices
+						 (append common-edges es)))))
     (multiple-value-bind (min-weight mst) (ms-tree *p84-graph*)
       (assert-eq 22 min-weight)
-      (assert-true (or (graph-equal mst solution-a)
-		       (graph-equal mst solution-b))))))
+      (assert-true (some (lambda (solution) (graph-equal mst solution))
+			 solutions)))))
