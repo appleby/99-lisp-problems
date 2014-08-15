@@ -13,6 +13,28 @@
 			      '((a b) (a d) (b c) (b e) (c e) (d e)
 				(d f) (d g) (e h) (f g) (g h))))
 
+(defun next-cut-set (v cut-set pst graph)
+  ;; Generate a new list of edges for the next invocation
+  ;; of grow. We have just selected the edge e=(u,v). We
+  ;; now need to:
+  ;;
+  ;; 1) Add all edges (v,w) where w is not in pst. In
+  ;;    other words, add all outbound edges from the new
+  ;;    vertex v that we just selected, but skip any that
+  ;;    introduce a cycle in pst.
+  ;;
+  ;; 2) Remove all edges (x,v) where x is in pst. That
+  ;;    is, any existing edges that point to our new
+  ;;    vertex should be removed, again to prevent
+  ;;    cycles.
+  (append
+   ;; Add all edges (v,w) where w is not in pst.
+   (remove-if (lambda (e) (contains-vertex (second e) pst))
+	      (adjacent-edges v graph))
+   ;; Remove all edges (x,v) where x is in pst.
+   (remove-if (lambda (e) (eq v (second e)))
+	      cut-set)))
+
 (defun s-tree (graph)
   "Return the set of all spanning trees of GRAPH.
 
@@ -27,44 +49,24 @@ This is procedure S from:
 	;; The last spanning tree we found. Used for bridge
 	;; detection.
 	last-stree)
-    (labels ((next-f (f v pst digraph)
-	       ;; Generate a new list of edges for the next invocation
-	       ;; of grow. We have just selected the edge e=(u,v). We
-	       ;; now need to:
-	       ;;
-	       ;; 1) Add all edges (v,w) where w is not in pst. In
-	       ;;    other words, add all outbound edges from the new
-	       ;;    vertex v that we just selected, but skip any that
-	       ;;    introduce a cycle in pst.
-	       ;;
-	       ;; 2) Remove all edges (x,v) where x is in pst. That
-	       ;;    is, any existing edges that point to our new
-	       ;;    vertex should be removed, again to prevent
-	       ;;    cycles.
-	       (append
-		;; Add all edges (v,w) where w is not in pst.
-		(remove-if (lambda (e) (contains-vertex (second e) pst))
-			   (adjacent-edges v digraph))
-		;; Remove all edges (x,v) where x is in pst.
-		(remove-if (lambda (e) (eq v (second e)))
-			   f)))
-
-	     (branch-p (v digraph)
+    (labels ((branch-p (v digraph)
 	       "Return t if v is the terminus of a bridge in digraph."
 	       (loop for (w x) in (edges digraph)
 		  never (and (eq x v) (not (path (adjacency last-stree) v w)))))
 
-	     (grow (f pst digraph)
+	     (grow (cut-set pst digraph)
 	       (if (vertices-equal digraph pst)
 		   (progn
 		     (setf last-stree pst)
 		     (push (convert-to 'undirected pst) solutions))
 		   (loop
-		      for (e . es) on f
+		      for (e . es) on cut-set
 		      for v = (second e)
 		      do
 			(progn
-			  (grow (next-f es v pst digraph) (add-edge e pst) digraph)
+			  (grow (next-cut-set v es pst digraph)
+				(add-edge e pst)
+				digraph)
 			  (setf digraph (remove-edge e digraph)))
 		      until (branch-p v digraph)))))
       (let* ( ;; The Gabow / Myers algorithm requires a directed graph
@@ -81,9 +83,8 @@ This is procedure S from:
 
 	     ;; A list of all the edges from a vertex in pst to a vertex
 	     ;; not in pst.
-	     (f (remove-if-not (lambda (e) (eq root (first e)))
-			       (edges digraph))))
-	(grow f pst digraph)))
+	     (cut-set (adjacent-edges root digraph)))
+	(grow cut-set pst digraph)))
     solutions))
 
 (defun is-connected (graph)
