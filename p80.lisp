@@ -205,6 +205,11 @@
 				 collect (list n1 n2 label)
 				 collect (list n2 n1 label)))))
 
+(defun adjacent-edges (vertex graph)
+  "Return a list of edges that are adjacent to VERTEX in GRAPH."
+  (mapcar (lambda (e) (funcall (if (atom e) #'list #'cons) vertex e))
+	  (second (assoc vertex (adjacency graph)))))
+
 (defun contains-vertex (v graph)
   (member v (vertices graph)))
 
