@@ -25,7 +25,30 @@
 		      (d g 3) (e h 5) (f g 4) (g h 1))))
 
 (defun ms-tree (graph)
-  (values 0 graph))
+  "Return a minimum spanning tree of GRAPH.
+
+This is Prim's algorithm."
+  (labels ((weight (edge)
+	     (third edge))
+	   (sort-edges (edges)
+	     (sort edges #'< :key #'weight)))
+    (loop
+       with root = (first (vertices graph))
+       with mst = (mk-labeled-graph (list root) '())
+       with cut-set = (sort-edges (adjacent-edges root graph))
+       until (or (vertices-equal mst graph) (null cut-set))
+       for min-edge = (pop cut-set)
+       sum (weight min-edge) into total-weight
+       do (setf mst (add-edge min-edge mst))
+       ;; Sorting is wasteful. It's tempting to use a heap for the
+       ;; cut-set or just do sorted insertions, but that would
+       ;; preclude re-using next-cut-set from the p83. Also, cl-heap's
+       ;; api for deleting an item from the heap requires you to save
+       ;; the item index returned by add-to-heap, which precludes
+       ;; using add-all-to-heap, which is a bummer.
+       do (setf cut-set
+		(sort-edges (next-cut-set (second min-edge) cut-set mst graph)))
+       finally (return (values total-weight mst)))))
 
 (define-test ms-tree-test
   ;;; The four solutions.
@@ -57,7 +80,7 @@
 	 (solutions (loop for es in swappable-edges
 		       collect (mk-labeled-graph vertices
 						 (append common-edges es)))))
-    (multiple-value-bind (min-weight mst) (ms-tree *p84-graph*)
-      (assert-eq 22 min-weight)
+    (multiple-value-bind (weight mst) (ms-tree *p84-graph*)
+      (assert-eq 22 weight)
       (assert-true (some (lambda (solution) (graph-equal mst solution))
 			 solutions)))))
