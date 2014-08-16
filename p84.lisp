@@ -42,7 +42,7 @@ This is Prim's algorithm."
        do (setf mst (add-edge min-edge mst))
        ;; Sorting is wasteful. It's tempting to use a heap for the
        ;; cut-set or just do sorted insertions, but that would
-       ;; preclude re-using next-cut-set from the p83. Also, cl-heap's
+       ;; preclude reusing next-cut-set from the p83. Also, cl-heap's
        ;; api for deleting an item from the heap requires you to save
        ;; the item index returned by add-to-heap, which precludes
        ;; using add-all-to-heap, which is a bummer.
