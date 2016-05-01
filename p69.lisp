@@ -8,7 +8,7 @@
 ;;;; shown in problem P67 is represented as "ABD..E..C.FG...". First,
 ;;;; try to establish a syntax (BNF or syntax diagrams) and then write
 ;;;; functions tree and dotstring which do the conversion.
-(in-package :99)
+(in-package :99-problems)
 
 (defgrammar dotstring-tree
     :terminals ((dot "\\.")

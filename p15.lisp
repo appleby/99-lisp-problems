@@ -2,7 +2,7 @@
 ;;;; Example:
 ;;;; * (repli '(a b c) 3)
 ;;;; (A A A B B B C C C)
-(in-package :99)
+(in-package :99-problems)
 
 (defun repli (lst n)
   (mapcan (lambda (x) (loop repeat n collect x)) lst))

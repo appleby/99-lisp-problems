@@ -12,7 +12,7 @@
 ;;;;          (p3 - 1) * p3 ** (m3 - 1) + ...
 ;;;;
 ;;;; Note that a ** b stands for the b'th power of a.
-(in-package :99)
+(in-package :99-problems)
 
 ;;; Note that there is an error in the equation given for phi,
 ;;; above. The series should be a product, not a sum.

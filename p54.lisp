@@ -1,4 +1,4 @@
-(in-package :99)
+(in-package :99-problems)
 
 ;;; Some default trees for testing.
 (defvar *the-empty-tree* nil)

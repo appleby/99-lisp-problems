@@ -10,7 +10,7 @@
 ;;;; Using atlevel it is easy to construct a function levelorder which
 ;;;; creates the level-order sequence of the nodes. However, there are
 ;;;; more efficient ways to do that.
-(in-package :99)
+(in-package :99-problems)
 
 (defun atlevel (tree level)
   (cond ((tree-empty-p tree) *the-empty-tree*)

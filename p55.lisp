@@ -20,7 +20,7 @@
 ;;;; * (cbal-tree 4)
 ;;;; ((X (X NIL NIL) (X NIL (X NIL NIL))) (X (X NIL NIL) (X (X NIL NIL) NIL)) ......)
 
-(in-package :99)
+(in-package :99-problems)
 
 (defun cartesian-product (list1 list2)
   (loop for x in list1 append

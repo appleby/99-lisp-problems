@@ -9,7 +9,7 @@
 ;;;; * (istree '(a (b nil nil)))
 ;;;; NIL
 
-(in-package :99)
+(in-package :99-problems)
 
 (defun p54a-istree (lst)
   (or (null lst)

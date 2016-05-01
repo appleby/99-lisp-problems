@@ -17,7 +17,7 @@
 ;;;; * (symmetric '(3 2 5 7))
 ;;;; NIL
 
-(in-package :99)
+(in-package :99-problems)
 
 (defun add-element (e tree)
   (cond ((tree-empty-p tree)

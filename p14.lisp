@@ -2,7 +2,7 @@
 ;;;; Example:
 ;;;; * (dupli '(a b c c d))
 ;;;; (A A B B C C C C D D)
-(in-package :99)
+(in-package :99-problems)
 
 (defun dupli (lst)
   (mapcan (lambda (x) (list x x)) lst))

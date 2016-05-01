@@ -27,7 +27,7 @@
 ;;;; obtained from the binary tree tree
 ;;;;
 ;;;; Test your function in an appropriate way.
-(in-package :99)
+(in-package :99-problems)
 
 (defun make-layout-node (elem x y left right)
   (list elem x y left right))

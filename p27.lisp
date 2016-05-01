@@ -26,7 +26,7 @@
 ;;;; You may find more about this combinatorial problem in a good book
 ;;;; on discrete mathematics under the term "multinomial
 ;;;; coefficients".
-(in-package :99)
+(in-package :99-problems)
 
 (defun remove-all (items lst &key (test #'eql))
   (remove-if (lambda (item) (member item items :test test)) lst))

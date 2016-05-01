@@ -14,7 +14,7 @@
 ;;;; c) If both the preorder sequence and the inorder sequence of the
 ;;;; nodes of a binary tree are given, then the tree is determined
 ;;;; unambiguously. Write a function pre-in-tree that does the job.
-(in-package :99)
+(in-package :99-problems)
 
 (defun preorder (tree)
   (if (tree-empty-p tree)

@@ -6,7 +6,7 @@
 
 ;;;; Hint: Use the built-in random number generator and the result of
 ;;;; problem P20.
-(in-package :99)
+(in-package :99-problems)
 
 (defun random-sample (vector n)
   "Based on Algorithm S from Knuth. TAOCP, vol. 2. p. 142.

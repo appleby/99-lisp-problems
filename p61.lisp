@@ -5,7 +5,7 @@
 ;;;;
 ;;;; (count-leaves tree) returns the number of leaves of binary tree
 ;;;; tree
-(in-package :99)
+(in-package :99-problems)
 
 (defun count-leaves (tree)
   (cond ((tree-empty-p tree) 0)

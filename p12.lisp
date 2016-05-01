@@ -2,7 +2,7 @@
 
 ;;;; Given a run-length code list generated as specified in problem
 ;;;; P11. Construct its uncompressed version.
-(in-package :99)
+(in-package :99-problems)
 
 (defun decode (rl-encoded-lst)
   (mapcan (lambda (x)

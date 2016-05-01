@@ -15,7 +15,7 @@
 ;;;; this exercise you should use the most primitive method to
 ;;;; calculate this function (there are smarter ways that we shall
 ;;;; discuss later).
-(in-package :99)
+(in-package :99-problems)
 
 (defun totient-phi (m)
   (when (not (plusp m))

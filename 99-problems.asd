@@ -8,7 +8,7 @@
 		   :depends-on (remove (pathname-name path) depends
 				       :test #'string=))))
 
-(defsystem #:99
+(defsystem #:99-problems
   :description "Solutions to the 99-Lisp problems."
   :author "Mike Appleby"
   :license "Nobody cares."

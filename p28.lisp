@@ -25,7 +25,7 @@
 ;;;; forth list have length 3 which appears twice (there are two list
 ;;;; of this length). And finally, the last three lists have length
 ;;;; 2. This is the most frequent length.
-(in-package :99)
+(in-package :99-problems)
 
 (defun rl-encoded->alist (rl-encoded-list)
   (loop for lst in rl-encoded-list collect (cons (cadr lst) (car lst))))

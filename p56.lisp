@@ -6,7 +6,7 @@
 ;;;; check whether a given binary tree is symmetric. We are only
 ;;;; interested in the structure, not in the contents of the nodes.
 
-(in-package :99)
+(in-package :99-problems)
 
 (defun symmetric (tree)
   (labels ((mirror-images-p (t1 t2)

@@ -5,7 +5,7 @@
 ;;;;
 ;;;; (leaves tree) returns the list of all leaves of the binary tree
 ;;;; tree
-(in-package :99)
+(in-package :99-problems)
 
 (defun leaves (tree)
   (cond ((tree-empty-p tree) *the-empty-tree*)

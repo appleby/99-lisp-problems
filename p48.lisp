@@ -16,7 +16,7 @@
 ;;;; nil true nil true
 ;;;; nil nil true true
 ;;;; nil nil nil true
-(in-package :99)
+(in-package :99-problems)
 
 (defun n-tuples (n values)
   (if (= n 0)

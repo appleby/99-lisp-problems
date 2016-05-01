@@ -2,7 +2,7 @@
 ;;;; Example:
 ;;;; * (remove-at '(a b c d) 2)
 ;;;; (A C D)
-(in-package :99)
+(in-package :99-problems)
 
 (defun remove-at (lst n)
   (loop for elem in lst

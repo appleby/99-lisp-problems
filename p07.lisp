@@ -4,7 +4,7 @@
 ;;;; * (my-flatten '(a (b (c d) e)))
 ;;;; (A B C D E)
 ;;;; Hint: Use the predefined functions list and append.
-(in-package :99)
+(in-package :99-problems)
 
 (defun flatten (lst)
   (cond

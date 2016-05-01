@@ -6,7 +6,7 @@
 ;;;; freely the most convenient form. The reason this problem is rated
 ;;;; (***) is not because it's particularly difficult, but because
 ;;;; it's a lot of work to deal with all the special cases.
-(in-package :99)
+(in-package :99-problems)
 
 (defclass graph ()
   ((graph-data :accessor graph-data :initarg :data :initform '())))

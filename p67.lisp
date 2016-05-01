@@ -10,7 +10,7 @@
 ;;;; expression). Then write a function which does this inverse;
 ;;;; i.e. given the string representation, construct the tree in the
 ;;;; usual form.
-(in-package :99)
+(in-package :99-problems)
 
 (defun tree->prefix-string (tree)
   (if (tree-empty-p tree)

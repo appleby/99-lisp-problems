@@ -1,5 +1,5 @@
 ;;;; (*) Find the number of elements of a list.
-(in-package :99)
+(in-package :99-problems)
 
 (defun my-length (lst)
   (if (null lst)

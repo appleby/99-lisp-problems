@@ -14,7 +14,7 @@
 ;;;; (huffman F) returns the Huffman code table for the frequency
 ;;;; table F
 
-(in-package :99)
+(in-package :99-problems)
 
 (defclass node ()
   ((symbols :initarg :symbols :reader symbols)

@@ -25,7 +25,7 @@
 ;;;; nodes
 ;;;;
 ;;;; Test your function in an appropriate way.
-(in-package :99)
+(in-package :99-problems)
 
 (defun complete-binary-tree (n &optional (k 1))
   (if (> k n)

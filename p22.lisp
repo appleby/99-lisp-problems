@@ -4,7 +4,7 @@
 ;;;; Example:
 ;;;; * (range 4 9)
 ;;;; (4 5 6 7 8 9)
-(in-package :99)
+(in-package :99-problems)
 
 (defun range (start end)
   (if (> start end)

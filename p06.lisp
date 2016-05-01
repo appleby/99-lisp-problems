@@ -4,7 +4,7 @@
 ;;; Tried to be clever and only iterate over half the list, but the
 ;;; calls to reverse and length end up making this version O(2.5n),
 ;;; whereas the the equal/reverse version below is O(2n).
-(in-package :99)
+(in-package :99-problems)
 
 (defun palindrome-iter-p (lst)
   (loop

@@ -13,7 +13,7 @@
 ;;;; how many solutions there are for a given number of nodes. What if
 ;;;; the number is even? Write an appropriate function.
 
-(in-package :99)
+(in-package :99-problems)
 
 (defun sym-cbal-trees (n)
   (loop for tree in (cbal-tree n)

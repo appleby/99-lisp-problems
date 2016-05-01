@@ -7,7 +7,7 @@
 ;;;; p83.dat. When you have a correct solution for the s-tree function,
 ;;;; use it to define two other useful functions: (is-tree graph) and
 ;;;; (is-connected graph). Both are five-minutes tasks!
-(in-package :99)
+(in-package :99-problems)
 
 (defvar *p83-graph* (mk-graph '(a b c d e f g h)
 			      '((a b) (a d) (b c) (b e) (c e) (d e)

@@ -10,7 +10,7 @@
 ;;; graph. Moreover, I think that directed cycles must have at least
 ;;; one edge, and undirected ones must have at least three edges.  In
 ;;; both cases, I think one should not repeat intermediate verticies.
-(in-package :99)
+(in-package :99-problems)
 
 (defun length-less-than (n)
   (lambda (lst) (< (length lst) n)))

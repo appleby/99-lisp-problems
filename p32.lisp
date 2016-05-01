@@ -3,7 +3,7 @@
 ;;;; Example:
 ;;;; * (gcd 36 63)
 ;;;; 9
-(in-package :99)
+(in-package :99-problems)
 
 (defun my-gcd (n m)
   (if (zerop m)

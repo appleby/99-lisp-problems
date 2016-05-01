@@ -14,7 +14,7 @@
 ;;;;
 ;;;; Can you apply the method of "result caching" in order to make the
 ;;;; function more efficient, when it is to be used repeatedly?
-(in-package :99)
+(in-package :99-problems)
 
 (defun prepender (s)
   (lambda (x)

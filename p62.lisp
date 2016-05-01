@@ -5,7 +5,7 @@
 ;;;;
 ;;;; (internals tree) returns the list of internal nodes of the binary
 ;;;; tree tree.
-(in-package :99)
+(in-package :99-problems)
 
 (defun internals (tree)
   (cond ((tree-empty-p tree) *the-empty-tree*)

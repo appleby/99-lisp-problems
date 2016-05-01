@@ -5,7 +5,7 @@
 ;;;; tree. By this definition, the tree in the figure of problem P70
 ;;;; has an internal path length of 9. Write a function (ipl tree) to
 ;;;; compute it.
-(in-package :99)
+(in-package :99-problems)
 
 (defun ipl (mw-tree)
   (labels ((recur (tree height)

@@ -7,7 +7,7 @@
 ;;;; Example:
 ;;;; * (compress '(a a a a b c c a a d e e e e))
 ;;;; (A B C A D E)
-(in-package :99)
+(in-package :99-problems)
 
 (defun compress (lst)
   (labels ((recur (lst prev)

@@ -12,7 +12,7 @@
 
 ;;; I already implemented this method as
 ;;; encode-modified-loop. Renaming it here to encode-direct.
-(in-package :99)
+(in-package :99-problems)
 
 (defvar encode-direct)
 (setf (symbol-function 'encode-direct) #'encode-modified-loop)

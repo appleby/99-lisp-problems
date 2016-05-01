@@ -12,7 +12,7 @@
 ;;;; Example:
 ;;;; * (goldbach 28)
 ;;;; (5 23)
-(in-package :99)
+(in-package :99-problems)
 
 (defun goldbach (n)
   (let* ((primes (prime-range 2 (- n 2)))

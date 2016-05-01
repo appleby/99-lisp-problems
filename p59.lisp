@@ -16,7 +16,7 @@
 ;;;; = (X (X (X NIL NIL) (X NIL NIL)) (X (X NIL NIL) NIL))
 ;;;; etc......
 
-(in-package :99)
+(in-package :99-problems)
 
 (defun hbal-tree (n)
   (cond ((<= n 0) (list (make-empty-tree)))

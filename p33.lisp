@@ -3,7 +3,7 @@
 ;;;; Example:
 ;;;; * (coprime 35 64)
 ;;;; T
-(in-package :99)
+(in-package :99-problems)
 
 (defun coprime (m n)
   (= (gcd m n) 1))

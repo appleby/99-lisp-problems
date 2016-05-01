@@ -23,7 +23,7 @@
 ;;;; N nodes.
 ;;;;
 ;;;; Find out how many height-balanced trees exist for N = 15.
-(in-package :99)
+(in-package :99-problems)
 
 (defun min-nodes (height)
   (cond ((<= height 0) 0)

@@ -2,7 +2,7 @@
 ;;;; Example:
 ;;;; * (insert-at 'alfa '(a b c d) 2)
 ;;;; (A ALFA B C D)
-(in-package :99)
+(in-package :99-problems)
 
 (defun insert-at (new-elem lst n)
   (cond ((= n 1)

@@ -6,7 +6,7 @@
 ;;;; Example:
 ;;;; * (nnodes '(a f))
 ;;;; 2
-(in-package :99)
+(in-package :99-problems)
 
 (defun nnodes (tree)
   (ecase (type-of tree)

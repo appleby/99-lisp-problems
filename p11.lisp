@@ -7,7 +7,7 @@
 ;;;; Example:
 ;;;; * (encode-modified '(a a a a b c c a a d e e e e))
 ;;;; ((4 A) B (2 C) (2 A) D (4 E))
-(in-package :99)
+(in-package :99-problems)
 
 (defun encode-modified (lst)
   (mapcar (lambda (sub-list)

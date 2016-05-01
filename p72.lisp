@@ -10,7 +10,7 @@
 ;;;; nondecreasing height. Nodes at the same height are visited in
 ;;;; order of nondecreasing depth, and nodes of the same height and
 ;;;; depth are visited in left-to-right order.
-(in-package :99)
+(in-package :99-problems)
 
 (defun bottom-up (mw-tree)
   (labels ((annotate (tree depth)

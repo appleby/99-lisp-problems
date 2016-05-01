@@ -2,7 +2,7 @@
 ;;;; Example:
 ;;;; * (is-prime 7)
 ;;;; T
-(in-package :99)
+(in-package :99-problems)
 
 (defun is-prime (n)
   (if (< n 2)

@@ -2,7 +2,7 @@
 ;;;;
 ;;;; Write a function (path g a b) to return an acyclic path from node
 ;;;; a to node b in the graph g. The function should return all paths.
-(in-package :99)
+(in-package :99-problems)
 
 (defun adjacent-nodes (adj-list n)
   "Return nodes adjacent to N in given adjacency list ADJ-LIST."

@@ -6,7 +6,7 @@
 ;;;; Example:
 ;;;; * (prime-factors 315)
 ;;;; (3 3 5 7)
-(in-package :99)
+(in-package :99-problems)
 
 (defun prime-factors (n)
   (labels ((recur (m k)

@@ -7,7 +7,7 @@
 ;;;;
 ;;;; Use the same conventions as in problem P64 and test your function
 ;;;; in an appropriate way.
-(in-package :99)
+(in-package :99-problems)
 
 (defun tree-height (tree &optional (index 0))
   "Return the height of TREE."

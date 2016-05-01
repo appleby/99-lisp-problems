@@ -3,7 +3,7 @@
 ;;;; Example:
 ;;;; * (split '(a b c d e f g h i k) 3)
 ;;;; ((A B C) (D E F G H I K))
-(in-package :99)
+(in-package :99-problems)
 
 (defun split (lst n)
   (when (not (plusp n))

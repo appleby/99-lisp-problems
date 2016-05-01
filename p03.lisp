@@ -3,7 +3,7 @@
 ;;;; Example:
 ;;;; * (element-at '(a b c d e) 3)
 ;;;; C
-(in-package :99)
+(in-package :99-problems)
 
 (defun element-at (lst n)
   (nth (1- n) lst))

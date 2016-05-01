@@ -6,7 +6,7 @@
 ;;;; Example:
 ;;;; * (istree '(a (f g) c (b d e)))
 ;;;; T
-(in-package :99)
+(in-package :99-problems)
 
 (defun is-mw-tree (list)
   (cond ((null list) nil)

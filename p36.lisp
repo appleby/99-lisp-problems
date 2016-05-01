@@ -7,7 +7,7 @@
 ;;;; * (prime-factors-mult 315)
 ;;;; ((3 2) (5 1) (7 1))
 ;;;; Hint: The problem is similar to problem P13.
-(in-package :99)
+(in-package :99-problems)
 
 (defun prime-factors-mult (n)
   (loop

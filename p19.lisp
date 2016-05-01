@@ -8,7 +8,7 @@
 
 ;;;; Hint: Use the predefined functions length and append, as well as
 ;;;; the result of problem P17.
-(in-package :99)
+(in-package :99-problems)
 
 (defun rotate (lst n)
   (if (null lst)

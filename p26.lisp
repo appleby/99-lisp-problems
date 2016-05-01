@@ -19,7 +19,7 @@
 ;;; Inductive step
 ;;;   C(k+1, {x0, x1, ..., xn}) =
 ;;;     {xi ++ c | for xi in {x0, ..., x(n-k)} for c in C(k, {x(i+1), .., xn})}
-(in-package :99)
+(in-package :99-problems)
 
 (defun combination (k lst)
   (if (= k 1)

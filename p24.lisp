@@ -3,7 +3,7 @@
 ;;;; Example:
 ;;;; * (lotto-select 6 49)
 ;;;; (23 1 17 33 21 37)
-(in-package :99)
+(in-package :99-problems)
 
 (defun lotto-select (take max)
   (rnd-select (range 1 max) take))

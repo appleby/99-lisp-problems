@@ -5,7 +5,7 @@
 ;;;; minimum weight. Hint: Use the algorithm of Prim. A small
 ;;;; modification of the solution of P83 does the trick. The data of
 ;;;; the example graph to the right can be found in the file p84.dat.
-(in-package :99)
+(in-package :99-problems)
 
 (defvar *p84-graph*
   ;;; Defines the following graph

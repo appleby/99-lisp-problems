@@ -11,7 +11,7 @@
 ;;;; true nil true
 ;;;; nil true nil
 ;;;; nil nil nil
-(in-package :99)
+(in-package :99-problems)
 
 (defun bind-vars (expr &rest vars-and-values)
   (loop

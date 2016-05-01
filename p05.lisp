@@ -1,5 +1,5 @@
 ;;;; (*) Reverse a list
-(in-package :99)
+(in-package :99-problems)
 
 (defun my-reverse (lst)
   (let ((reversed '()))
