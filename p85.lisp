@@ -190,6 +190,11 @@
 		     (vertex->index v1 graph)
 		     (vertex->index v2 graph)))
 	     (r-loops (n m)
+	       ;; This rule is not mentioned in the paper and is not
+	       ;; strictly required. Without this check, the algorithm
+	       ;; will fail on r-pred in the next recursive invocation
+	       ;; of match. This idea is stolen from the NetworkX
+	       ;; python implementation.
 	       (= (num-edges-between n n g1) (num-edges-between m m g2)))
 	     (pred/succ-check (pred/succ-fn n n-graph m m-graph)
 	       (every (lambda (n-prime)
@@ -201,9 +206,15 @@
 		      (intersection (funcall pred/succ-fn n n-graph)
 				    (core-vertices n-graph))))
 	     (r-pred (n m)
+	       ;; Rpred(s,n,m) <==>
+	       ;; (∀n′ ∈ M₁(s) ∩ Pred(G₁,n) ∃m′ ∈ Pred(G₂,m) | (n′,m′) ∈ M(s)) ∧
+	       ;; (∀m′ ∈ M₂(s) ∩ Pred(G₂,m) ∃n′ ∈ Pred(G₁,n) | (n′,m′) ∈ M(s)) ∧
 	       (and (pred/succ-check #'predecessors. n g1 m g2)
 		    (pred/succ-check #'predecessors. m g2 n g1)))
 	     (r-succ (n m)
+	       ;; Rsucc(s,n,m) <==>
+	       ;; (∀n′ ∈ M₁(s) ∩ Succ(G₁,n) ∃m′ ∈ Succ(G₂,m) | (n′,m′) ∈ M(s)) ∧
+	       ;; (∀m′ ∈ M₂(s) ∩ Succ(G₂,m) ∃n′ ∈ Succ(G₁,n) | (n′,m′) ∈ M(s)) ∧
 	       (and (pred/succ-check #'successors. n g1 m g2)
 		    (pred/succ-check #'successors. m g2 n g1)))
 	     (in/out/new-check (n n-restrictor m m-restrictor)
@@ -213,9 +224,15 @@
 		    (= (length (intersection (predecessors. n g1) n-restrictor))
 		       (length (intersection (predecessors. m g2) m-restrictor)))))
 	     (r-in (n m)
+	       ;; Rin(s,n,m) <==>
+	       ;; (Card(Succ(G₁,n) ∩ T₁^in(s)) = Card(Succ(G₂,m) ∩ T₂^in(s))) ∧
+	       ;; (Card(Pred(G₁,n) ∩ T₁^in(s)) = Card(Pred(G₂,m) ∩ T₂^in(s))) ∧
 	       (in/out/new-check n (terminal-set g1 'in)
 				 m (terminal-set g2 'in)))
 	     (r-out (n m)
+	       ;; Rout(s,n,m) <==>
+	       ;; (Card(Succ(G₁,n) ∩ T₁^out(s)) = Card(Succ(G₂,m) ∩ T₂^out(s))) ∧
+	       ;; (Card(Pred(G₁,n) ∩ T₁^out(s)) = Card(Pred(G₂,m) ∩ T₂^out(s))) ∧
 	       (in/out/new-check n (terminal-set g1 'out)
 				 m (terminal-set g2 'out)))
 	     (big-enya (graph)
@@ -226,6 +243,9 @@
 			     (terminal-set graph 'in)
 			     (terminal-set graph 'out))))
 	     (r-new (n m)
+	       ;; Rnew(s,n,m) <==>
+	       ;; (Card(Ñ₁(s) ∩ Pred(G₁,n)) = Card(Ñ₂(s) ∩ Pred(G₂,m))) ∧
+	       ;; (Card(Ñ₁(s) ∩ Succ(G₁,n)) = Card(Ñ₂(s) ∩ Succ(G₂,m))) ∧
 	       (in/out/new-check n (big-enya g1)
 				 m (big-enya g2)))
 	     (feasible (n m)
@@ -238,6 +258,51 @@
 		   (list (reduce (lambda (x y) (if (< (sxhash x) (sxhash y)) x y))
 				 lst))))
 	     (candidate-pairs ()
+	       ;; From [1]
+	       ;; 2.1 Computation of the Candidate Pairs Set P(s)
+	       ;;
+	       ;; The set P(s) of all the possible pairs candidate to
+	       ;; be added to the current state is obtained by
+	       ;; considering first the sets of the nodes directly
+	       ;; connected to G₁(s) and G₂(s). Let us denote with
+	       ;; T₁^out(s) and T₂^out(s) the sets of nodes, not yet
+	       ;; in the partial mapping, that are the destination of
+	       ;; branches starting from G₁(s) and G₂(s),
+	       ;; respectively; similarly, with T₁^in(s) and T₂^in(s),
+	       ;; we will denote the sets of nodes, not yet in the
+	       ;; partial mapping, that are the origin of branches
+	       ;; ending into G₁(s) and G₂(s).  The set P(s) will be
+	       ;; made of all the node pairs (n,m), with n belonging
+	       ;; to T₁^out(s) and m to T₂^out(s), unless one of these
+	       ;; two sets is empty. In this case, the set P(s) is
+	       ;; likewise obtained by considering T₁^in(s) and
+	       ;; T₂^in(s), respectively. In presence of not connected
+	       ;; graphs, for some state s, all of the above sets may
+	       ;; be empty. In this case, the set of candidate pairs
+	       ;; making up P(s) will be the set P^d(s) of all the
+	       ;; pairs of nodes not contained neither in G₁(s) nor in
+	       ;; G₂(s).
+	       ;;
+	       ;; From [2]
+	       ;; 2.2 Definition of the set P(s) and of the
+	       ;;     feasibility function F(s,n,m)
+	       ;;
+	       ;; ...The set P(s) is constructed as follows: if both
+	       ;; T₁^out(s) and T₂^out(s) are not empty, then
+	       ;;
+	       ;;     P(s) = T₁^out(s) × {min T₂^out(s)}
+	       ;;
+	       ;; where the min refers to the node in T₂^out(s) which
+	       ;; has the smallest label (actually, any other total
+	       ;; ordering criterion could be used). If instead both
+	       ;; T₁^out(s) and T₂^out(s) are empty, and both T₁^in(s)
+	       ;; and T₂^in (s) are not, then
+	       ;;
+	       ;;     P(s) = T₁in(s) × {min T₂in(s)}
+	       ;;
+	       ;; Finally, if all the four terminal sets are empty,
+	       ;;
+	       ;;     P(s) = (N₁ − M₁(s)) × {min (N₂ − M₂(s))}
 	       (or (cartesian-product (terminal-set g1 'out)
 				      (min. (terminal-set g2 'out)))
 		   (cartesian-product (terminal-set g1 'in)
@@ -529,7 +594,7 @@ vertices and ``num-edges'' edges."
   "Return a list of all possible graphs of type ``graph-type'' with
 ``num-vertices'' or fewer vertices. Self-loops are included or
 excluded based on the value of ``allow-loops''."
-  ;;
+
   ;; WARNING: The number of graphs grows exponentially with
   ;; num-vertices. You probably don't want to call this function with
   ;; num-vertices greater than about 4 or 5.
@@ -537,7 +602,6 @@ excluded based on the value of ``allow-loops''."
   (assert (< num-vertices (if (eq graph-type 'directed-graph)
 			      (if allow-loops 4 5)
 			      (if allow-loops 5 6))))
-  ;;
   ;; When graph-type is 'DIRECTED-GRAPH and allow-loops is true, the
   ;; number of graphs output by this function grows as:
   ;;     a(n) = Sum_{k=0,n} 2^(k^2)
