@@ -688,7 +688,8 @@ excluded based on the value of ``allow-loops''."
     			    (generate-all-isomorphs graph)
     			    (generate-random-isomorphs graph 20))))
     (assert-false (isomorph-p graph (add-edge '(foo bar) graph)))
-    (assert-false (isomorph-p graph (add-edge '(foo a) graph)))
+    (assert-false (isomorph-p graph (add-edge (list 'foo (first (vertices graph)))
+					      graph)))
     (unless (null (edges graph))
       (assert-false (isomorph-p graph (remove-edge (first (edges graph)) graph))))))
 
