@@ -404,17 +404,6 @@ list."
     (alexandria:map-combinations (lambda (x) (push x combinations))
 				 lst :length length)))
 
-(defun translate (table tree)
-  "Return a new tree where for each (A . B) in the alist ``table'', A
-has been substituted for B in ``tree''."
-  (labels ((recur (tree)
-	     (cond ((null tree) nil)
-		   ((assoc tree table :test #'equal)
-		    (cdr (assoc tree table :test #'equal)))
-		   ((symbolp tree) tree)
-		   (t (cons (recur (car tree)) (recur (cdr tree)))))))
-    (recur tree)))
-
 
 ;;; Graph-Related Functions and Methods
 
@@ -517,8 +506,8 @@ sets."
 	    collect (make-instance
 		     (class-of graph)
 		     :data (list (vertices graph)
-				 (translate (pairlis (vertices graph)
-						     permuted-vertices)
+				 (sublis (pairlis (vertices graph)
+						  permuted-vertices)
 					    (edges graph)))))))
   (defun generate-random-isomorphs (graph num-isomorphs)
     "Return a list of ``num-isomorphs'' random isomorphs of ``graph''."
@@ -712,20 +701,6 @@ excluded based on the value of ``allow-loops''."
 		     (c a b d) (c a d b) (c b a d) (c b d a) (c d a b) (c d b a)
 		     (d a b c) (d a c b) (d b a c) (d b c a) (d c a b) (d c b a))
 		   (permutations '(a b c d))))
-
-(define-test translate-test
-  (assert-equal '() (translate '() '()))
-  (assert-equal '() (translate '((a . b)) '()))
-  (assert-equal '(a (b c) d) (translate '() '(a (b c) d)))
-  (assert-equal '(z b) (translate '((a . newa)) '(z b)))
-  (assert-equal '(newa newb) (translate '((a . newa) (b . newb)) '(a b)))
-  (assert-equal '((newa newb) (newa newc) (newb newa) (newb newc) (newc newa) (newc newb))
-		(translate '((a . newa) (b . newb) (c . newc))
-			   '((a b) (a c) (b a) (b c) (c a) (c b))))
-  (assert-equal '(newa (newb c) d)
-		(translate '((a . newa) (b . newb)) '(a (b c) d)))
-  (assert-equal '(z (d (newa f)) ((newb)))
-		(translate '((a . newa) (b . newb)) '(z (d (a f)) ((b))))))
 
 (define-test sorted-degrees-test
   (assert-equal '(3 2 1 1 1) (sorted-degrees (mk-graph   '(a b c d e) '((a b) (b c) (c d) (c e)))))
