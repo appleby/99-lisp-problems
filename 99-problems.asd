@@ -12,5 +12,18 @@
   :description "Solutions to the 99-Lisp problems."
   :author "Mike Appleby"
   :license "Nobody cares."
-  :depends-on (#:alexandria #:cl-heap #:com.informatimago.rdp #:lisp-unit #:split-sequence)
-  :components #.(files-matching-pattern "p*.lisp" :depends '("package")))
+  :depends-on (#:alexandria
+	       #:cl-heap
+	       #:lisp-unit
+	       #:split-sequence
+	       #-(or sbcl clisp) #:com.informatimago.rdp)
+  :components #.(files-matching-pattern
+		 "p*.lisp"
+		 :depends '("package")
+		 ;; TODO: check for updates to com.informatimago.rdp.
+		 ;; P69 and P70 depend on com.informatimago.rdp, which
+		 ;; is having problems with the current versions of
+		 ;; clisp and sbcl. Temporarily disable for those lisps.
+		 :excludes
+		 #-(or sbcl clisp) nil
+		 #+(or sbcl clisp) '("p69" "p70")))
