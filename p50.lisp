@@ -38,7 +38,7 @@
 	  (+ (weight node1) (weight node2))
 	  node1
 	  node2))
-  
+
 (defun symbol-frequencies->priority-queue (symbol-frequencies)
   (loop
      with queue = (make-instance 'cl-heap:priority-queue)
@@ -53,7 +53,6 @@
   "")
 
 (defun next-bit-and-node (symbol node)
-  (declare (optimize (debug 3) (safety 3) (speed 0)))
   (cond ((member symbol (symbols (left-tree node))) (values "0" (left-tree node)))
 	((member symbol (symbols (right-tree node))) (values "1" (right-tree node)))
 	(t (error "Symbol '~a' does not exist in tree ~a" symbol node))))
@@ -68,16 +67,18 @@
 (defun make-huffman-tree (symbol-frequencies)
   (loop
      with queue = (symbol-frequencies->priority-queue symbol-frequencies)
-     until (= 1 (cl-heap:queue-size queue))
      for node1 = (cl-heap:dequeue queue)
      for node2 = (cl-heap:dequeue queue)
      for new-node = (combine-nodes node1 node2)
-     do (cl-heap:enqueue queue new-node (weight new-node))
-     finally (return (cl-heap:dequeue queue))))
+     when (= 0 (cl-heap:queue-size queue)) return new-node
+     else do (cl-heap:enqueue queue new-node (weight new-node))))
 
 (defun huffman (symbol-frequencies)
-  (encode-symbols (mapcar #'car symbol-frequencies)
-		  (make-huffman-tree symbol-frequencies)))
+  (assert symbol-frequencies)
+  (if (= 1 (length symbol-frequencies))
+      (list (caar symbol-frequencies) "0")
+      (encode-symbols (mapcar #'car symbol-frequencies)
+		      (make-huffman-tree symbol-frequencies))))
 
 (define-test huffman-known-values
   (let ((input '((a 45) (b 13) (c 12) (d 16) (e 9) (f 5)))
