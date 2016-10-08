@@ -13,35 +13,35 @@
 ;;;; lists (instead of strings). Write also an inverse function.
 (in-package :99-problems)
 
-(defun mw-tree-rep-action (rep)
-  (if (not (listp rep))
-      rep
-      (mapcar (lambda (tree)
-		(if (and (consp tree) (= 1 (length tree)))
-		    (car tree)
-		    tree))
-	      rep)))
+(defun caret-string-lexer (caret-string &aux (caret-list (coerce caret-string 'list)))
+  (lambda () (if (null caret-list)
+	    (values nil nil)
+	    (let ((char (pop caret-list)))
+	      (cond ((char= char #\^) (values 'caret nil))
+		    ((alpha-char-p char) (values 'symbol (intern (string char))))
+		    (t (error "~S is neither '^' nor 'a-zA-Z'." char)))))))
 
-(defun mw-tree-action (sym children)
-  (if children
-      (cons sym children)
-      sym))
-
-(defgrammar caret-string-mw-tree
-    :terminals ((sym "[a-z]|[A-Z]")
-		(caret "\\^"))
-    :start mw-tree
-    :rules ((--> mw-tree
-		 sym
-		 (rep mw-tree :action (mw-tree-rep-action $1))
-		 caret
-		 :action (mw-tree-action (intern (cadr $1)) $2))))
+(yacc:define-parser *caret-string-parser*
+  (:start-symbol empty-or-mw-tree)
+  (:terminals (caret symbol))
+  (empty-or-mw-tree
+   caret
+   mw-tree)
+  (mw-tree
+   (symbol caret (lambda (s c) (declare (ignore c)) s))
+   (symbol mw-tree+ caret
+	   (lambda (s st+ c)
+	     (declare (ignore c))
+	     (cons s st+))))
+  (mw-tree+
+   (mw-tree #'list)
+   (mw-tree+ mw-tree (lambda (x y) (append x (list y))))))
 
 (defun caret-string->mw-tree (caret-string)
-  (parse-caret-string-mw-tree caret-string))
+  (yacc:parse-with-lexer (caret-string-lexer caret-string) *caret-string-parser*))
 
 (defun mw-tree->caret-string (mw-tree)
-  (cond ((null mw-tree) "")
+  (cond ((null mw-tree) "^")
 	((symbolp mw-tree)
 	 (format nil "~a^" mw-tree))
 	(t
@@ -50,13 +50,17 @@
 		 (mapcar #'mw-tree->caret-string (cdr mw-tree))))))
 
 (define-test mw-tree-caret-string-test
-    (let ((inputs '(a
-		    (a b)
-		    (a b c) (a (b c))
-		    (a b c d) (a (b c) d) (a b (c d)) (a (b c d))
-		    (a (f g) c (b d e)))))
-      (loop for mw-tree in inputs
-	 do (assert-equality
-	     #'tree-equal
-	     mw-tree
-	     (caret-string->mw-tree (mw-tree->caret-string mw-tree))))))
+  (let ((inputs '(()
+		  a
+		  (a b)
+		  (a b c)
+		  (a (b c))
+		  (a b c d)
+		  (a (b c) d) (a b (c d))
+		  (a (b c d))
+		  (a (f g) c (b d e)))))
+    (loop for mw-tree in inputs
+       do (assert-equality
+	   #'tree-equal
+	   mw-tree
+	   (caret-string->mw-tree (mw-tree->caret-string mw-tree))))))

@@ -10,19 +10,23 @@
 ;;;; functions tree and dotstring which do the conversion.
 (in-package :99-problems)
 
-(defgrammar dotstring-tree
-    :terminals ((dot "\\.")
-		(sym "[A-Z]|[a-z]"))
-    :start tree
-    :rules ((--> tree
-		 (alt dot (seq sym tree tree))
-		 :action (if (eq (car $1) 'DOT)
-			     nil
-			     (list (intern (cadar $1)) (cadr $1) (caddr $1))))))
+(defun dotstring-lexer (dotstring &aux (dotlist (coerce dotstring 'list)))
+  (lambda () (if (null dotlist)
+	    (values nil nil)
+	    (let ((char (pop dotlist)))
+	      (cond ((char= char #\.) (values 'dot nil))
+		    ((alpha-char-p char) (values 'symbol (intern (string char))))
+		    (t (error "~S is neither '.' nor 'a-zA-Z'." char)))))))
 
+(yacc:define-parser *dotstring-parser*
+  (:start-symbol tree)
+  (:terminals (dot symbol))
+  (tree
+   (symbol tree tree (lambda (s l r) (list s l r)))
+   dot))
 
 (defun dotstring->tree (dot-string)
-  (parse-dotstring-tree dot-string))
+  (yacc:parse-with-lexer (dotstring-lexer dot-string) *dotstring-parser*))
 
 (defun tree->dotstring (tree)
   (if (tree-empty-p tree)
