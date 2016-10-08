@@ -44,7 +44,7 @@
   (if (or (null preorder) (null inorder))
       *the-empty-tree*
       (destructuring-bind (inorder-left inorder-right)
-	  (split-sequence (car preorder) inorder)
+	  (split-sequence:split-sequence (car preorder) inorder)
 	(destructuring-bind (preorder-left preorder-right)
 	    (split-preorder-on-inorder (cdr preorder) inorder-left inorder-right)
 	  (make-tree-node (car preorder)
