@@ -118,7 +118,7 @@
   (loop for (n1 n2 nil) in edges collect (list n1 n2)))
 
 (defmacro defadjacency-method (graph-type)
-  (with-gensyms (graph n1 n2 label node nodes edges)
+  (alexandria:with-gensyms (graph n1 n2 label node nodes edges)
     (let* ((is-labeled (subtypep graph-type 'labeled-graph))
 	   (is-directed (subtypep graph-type 'directed-graph))
 	   (edge-binding-form (if is-labeled `(,n1 ,n2 ,label) `(,n1 ,n2)))
