@@ -5,9 +5,9 @@
 (in-package :99-problems)
 
 (defun my-last (lst)
-  (if (cdr lst)
-      (my-last (cdr lst))
-      lst))
+  (if (null (cdr lst))
+      lst
+      (my-last (cdr lst))))
 
 (define-test my-last-test
   (assert-equal '(d) (my-last '(a b c d))))
