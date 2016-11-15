@@ -109,7 +109,7 @@
 
 (defun graph-expression-form-p (graph)
   (and (= 2 (length (graph-data graph)))
-       (every #'symbolp (car (graph-data graph)))))
+       (every #'atom (car (graph-data graph)))))
 
 (defun adjacency-list-form-p (graph)
   (not (graph-expression-form-p graph)))
