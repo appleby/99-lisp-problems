@@ -6,7 +6,7 @@
 
 (defun my-but-last (lst)
   (if (null (cddr lst))
-      lst
+      car(lst)
       (my-but-last (cdr lst))))
 
 (define-test my-but-last-test
