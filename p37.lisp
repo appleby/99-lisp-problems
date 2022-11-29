@@ -24,4 +24,4 @@
 
 (define-test totient-phi-improved-test
   (loop for i from 1 upto 1000
-     do (assert-eq (totient-phi i) (totient-phi-improved i))))
+     do (assert-eql (totient-phi i) (totient-phi-improved i))))
