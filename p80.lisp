@@ -139,6 +139,44 @@
 (defadjacency-method labeled-undirected-graph)
 (defadjacency-method labeled-directed-graph)
 
+#+(or)
+(progn
+  (defmethod adjacency ((graph undirected-graph))
+    (destructuring-bind (nodes edges) (graph-data graph)
+      (loop for node in nodes
+            collect (list node
+                          (loop for (n1 n2) in edges
+                                when (eq node n1)
+                                  collect n2
+                                when (eq node n2)
+                                  collect n1)))))
+
+  (defmethod adjacency ((graph directed-graph))
+    (destructuring-bind (nodes edges) (graph-data graph)
+      (loop for node in nodes
+            collect (list node
+                          (loop for (n1 n2) in edges
+                                when (eq node n1)
+                                  collect n2)))))
+
+  (defmethod adjacency ((graph labeled-undirected-graph))
+    (destructuring-bind (nodes edges) (graph-data graph)
+      (loop for node in nodes
+            collect (list node
+                          (loop for (n1 n2 label) in edges
+                                when (eq node n1)
+                                  collect (list n2 label)
+                                when (eq node n2)
+                                  collect (list n1 label))))))
+
+  (defmethod adjacency ((graph labeled-directed-graph))
+    (destructuring-bind (nodes edges) (graph-data graph)
+      (loop for node in nodes
+            collect (list node
+                          (loop for (n1 n2 label) in edges
+                                when (eq node n1)
+                                  collect (list n2 label)))))))
+
 (defgeneric convert-to (to from)
   (:documentation "Convert between graph types."))
 
