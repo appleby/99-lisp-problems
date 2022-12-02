@@ -81,6 +81,6 @@ This is Prim's algorithm."
 		       collect (mk-labeled-graph vertices
 						 (append common-edges es)))))
     (multiple-value-bind (weight mst) (ms-tree *p84-graph*)
-      (assert-eq 22 weight)
+      (assert-eql 22 weight)
       (assert-true (some (lambda (solution) (graph-equal mst solution))
 			 solutions)))))
