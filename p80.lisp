@@ -8,10 +8,9 @@
 ;;;; it's a lot of work to deal with all the special cases.
 (in-package :99-problems)
 
-(defclass graph ()
-  ((graph-data :accessor graph-data :initarg :data :initform '())))
-
 (eval-when (:compile-toplevel :load-toplevel :execute)
+  (defclass graph ()
+    ((graph-data :accessor graph-data :initarg :data :initform '())))
   (defclass undirected-graph (graph) ())
   (defclass directed-graph (graph) ())
   (defclass labeled-graph (graph) ())
